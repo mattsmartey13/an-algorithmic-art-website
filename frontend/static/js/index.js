@@ -1,3 +1,5 @@
+import Home from "./views/Home.js";
+
 const navigateTo = url => {
     history.pushState(null, null, url);
     router();
@@ -5,7 +7,7 @@ const navigateTo = url => {
 
 const router = async () => {
     const routes = [
-        { path: "/", view: () => console.log("Viewing home") },
+        { path: "/", view: Home },
         { path: "/about-me", view: () => console.log("Viewing about me") },
         { path: "/artwork", view: () => console.log("Viewing artwork") },
     ];
@@ -27,9 +29,15 @@ const router = async () => {
         };
     }
 
-    console.log(match.route.view());
+    const view = new match.route.view();
+
+    document.querySelector("#app").innerHTML = await view.getHtml();
+
+    //console.log(match.route.view());
     //console.log(match);
 };
+
+window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", e => {
