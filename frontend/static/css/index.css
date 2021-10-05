@@ -1,12 +1,23 @@
 body {
-    --nav-width: 30%;
+    --nav-width: 15%;
     margin: 0 0 0 var(--nav-width);
     font-family: "Trebuchet MS";
     font-size: 15px;
 }
 
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0
+}
+li a {
+    display: block;
+    text-align: center;
+}
+
 .navigation {
     position: fixed;
+    text-align: center;
     top: 0;
     left: 0;
     width: var(--nav-width);
@@ -16,22 +27,28 @@ body {
 
 .navigation__link {
     display: block;
-    padding: 15px 20px;
-    text-decoration: overline;
+    list-style-type: circle;
+    padding: 10px;
     color: darkblue;
     font-weight: bolder;
 }
 
 .navigation__link:hover {
-    background: cadetblue;
+    background: cyan;
+}
+
+.navigation__link:active {
+    background-color: darkslateblue;
+    color: white;
 }
 
 #app {
     margin: 100 - var(--nav-width);
+    padding: 5px 15px;
     line-height: 1.5;
     font-weight: 500;
 }
 
 a {
-    color: floralwhite;
+    color: darkblue;
 }
