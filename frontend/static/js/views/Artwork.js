@@ -1,9 +1,9 @@
 import AbstractView from "./AbstractView.js";
 
 export default class extends AbstractView {
-    constructor() {
-        super();
-        this.setTitle("Artwork");
+    constructor(params) {
+        super(params);
+        this.setTitle("Artwork carousel");
     }
 
     async getHtml() {
@@ -16,4 +16,10 @@ export default class extends AbstractView {
             </p>
         `;
     }
+
+    async getCarousel() {
+
+    }
+
+    
 }
