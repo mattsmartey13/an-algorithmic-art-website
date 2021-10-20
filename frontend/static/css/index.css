@@ -1,7 +1,8 @@
 body {
     --nav-width: 15%;
     margin: 0 0 0 var(--nav-width);
-    font-family: "Trebuchet MS";
+    padding-left: 15px;
+    font-family: Arial;
     font-size: 15px;
 }
 
@@ -9,10 +10,6 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0
-}
-li a {
-    display: block;
-    text-align: center;
 }
 
 .navigation {
@@ -40,15 +37,4 @@ li a {
 .navigation__link:active {
     background-color: darkslateblue;
     color: white;
-}
-
-#app {
-    margin: 100 - var(--nav-width);
-    padding: 5px 15px;
-    line-height: 1.5;
-    font-weight: 500;
-}
-
-a {
-    color: darkblue;
 }

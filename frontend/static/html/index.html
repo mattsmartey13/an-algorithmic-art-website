@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>An algorithmic art website using Vanilla JavaScript</title>
+    <link rel="stylesheet" href="frontend/static/css/index.css">
+</head>
+<body>
+    <ul class="navigation">
+        <li class="navigation__link" onclick="router.loadRoute('')">Home</li>
+        <li class="navigation__link" onclick="router.loadRoute('about-me')">About me</li>
+        <li class="navigation__link" onclick="router.loadRoute('artwork-home')">My artwork</li>
+    </ul>
+    <div id="content"></div>
+    <script src="frontend/static/js/routes.js"></script>
+    <script src="frontend/static/js/router.js"></script>
+    <script src="frontend/static/js/index.js"></script>
+</body>
+</html>
