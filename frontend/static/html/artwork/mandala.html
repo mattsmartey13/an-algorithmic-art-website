@@ -2,7 +2,6 @@
 <html lang="en">
 <body>
 <h1>Mandala</h1>
-<h2>Background</h2>
 <p>
     Mandala is the Sanskrit word for "circle", however in art it is referred to a geometric collection of shapes to form a gorgeous
     <br>
@@ -16,19 +15,28 @@
     <br>
     outside and inside section to create a symmetrical or semi-symmetrical pattern of circles and shapes, which are meant to represent peace and balance.
 </p>
-<hr>
 <p>
     The Mandala is the first piece of artwork I have attempted to recreate. I have chosen the mandala due to my fascination with geometric patterns, and
     <br>
     its meaning in my life as I am a practitioning Buddhist. Below, the user has the opportunity to use a scroll to add or subtract points of contact on
     <br>
-    the canvas to simplify or add further complexity to the Mandala. The user is also free to experiment with the background color and to change the color
-    <br>
-    of the mandala itself.
+    the canvas to simplify or add further complexity to the Mandala. The user is also free to animate the mandala and to change the color  of the lines.
     <br>
 </p>
-  <label for='points'>Points:</label><input type='range' min='10' max='40' id='points' value='20'/>
-  <canvas id='canvas' width='400' height='400'></canvas>
+<hr>
+<label for='mandalaPoints'>Number of points: </label>
+<input type='range' min='20' max='40' id='mandalaPoints'
+       value='20'
+       onchange="drawMandala(mandalaPoints.value, mandalaLineColor.value)"
+/>
+<label for='mandalaLineColor'>Line colour: </label>
+<input type='color' id='mandalaLineColor'
+       oninput="drawMandala(mandalaPoints.value, mandalaLineColor.value)"
+/>
+<button name="playMandala" id="playMandala"
+        onclick="animateMandala()">Animate</button>
+<br>
+<canvas id='mandalaCanvas' width='400' height='400'></canvas>
 <script src="../../js/artwork/mandala.js"></script>
 </body>
 </html>
