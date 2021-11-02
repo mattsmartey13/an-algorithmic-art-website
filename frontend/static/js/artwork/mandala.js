@@ -52,7 +52,7 @@ function animateMandala() {
 
     if (forward) {
         preAnimationDelay().then(async () => {
-            for (let i = point_count.value; i <= 40; i++) {
+            for (let i = point_count.value; i <= point_count.max; i++) {
                 await sleep(200);
                 drawMandala(i, lineColor.value);
                 point_count.value = i;
@@ -63,7 +63,7 @@ function animateMandala() {
         });
     } else {
         preAnimationDelay().then(async () => {
-            for (let i = point_count.value; i >= 20; i--) {
+            for (let i = point_count.value; i >= point_count.min; i--) {
                 await sleep(200);
                 drawMandala(i, lineColor.value);
                 point_count.value = i;
