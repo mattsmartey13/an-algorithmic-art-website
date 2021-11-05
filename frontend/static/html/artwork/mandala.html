@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<body>
+<body onload="drawMandala(mandalaPoints.value, mandalaLineColor.value)">
 <h1>Mandala</h1>
 <p>
     Mandala is the Sanskrit word for "circle", however in art it is referred to a geometric collection of shapes to form a gorgeous
@@ -37,6 +37,5 @@
         onclick="animateMandala()">Animate</button>
 <br>
 <canvas id='mandalaCanvas' width='400' height='400'></canvas>
-<script src="../../js/artwork/mandala.js"></script>
 </body>
 </html>

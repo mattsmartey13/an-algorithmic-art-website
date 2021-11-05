@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<body>
-    <h1>Lindenmayer tree</h1>
-    <p>
-
-    </p>
-    <p>
-
-    </p>
-    <hr>
-    <
+<body onload="drawLindenmayer(400, 500, 100, 0, 10)">
+<h1>Lindenmayer tree</h1>
+<p>
+        L-systems are a type of algorithm used to create complex shapes and patterns using a simple "alphabet" ruleset.
+        <br>
+        This was proposed by biologist Aristid Lindenmayer to explain the nature of plants and their algorithmic beauty.
+        <br>
+        Computer scientists have taken his ideas to explain the creation of formal languages using a finite alphabet.
+        <br>
+</p>
+<p>
+        Below you will see my inspiration for my focus on L-systems in this project.
+</p>
+<hr>
+<button id="lindenmayer1drawbtn" name="lindenmayer1drawbtn" onclick="drawLindenmayer(400, 500, 100, 0, 10)">Draw tree</button>
+<br>
+<canvas id="lindenmayer1canvas" width="1000" height="600"></canvas>
+<script src="../../js/artwork/lindenmayer.js"></script>
 </body>
 </html>
