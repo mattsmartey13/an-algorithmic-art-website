@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<h1>Custom fractal writer</h1>
+<p>
+    As my first bespoke piece, I have given the user the opportunity to create their own fractal patterns using a rule
+    builder.
+    <br>
+    This system is able to iterate 1 to 8 times using two rule-sets that the user has control over.
+    <br>
+    The user then will input combinations of A and B in the string, choose line length and then press draw!
+    <br>
+    The alphabet for this system goes as follows:
+    <br>
+</p>
+<ul>
+    <li>F: This will draw a line going in the direction assigned.</li>
+    <li>+: This will turn the pointer clockwise by the number of degrees assigned.</li>
+    <li>-: This will turn the pointer anticlockwise by the direction assigned</li>
+    <li>A: This will make a recursive call to Rule A</li>
+    <li>B: This will make a recursive call to Rule B</li>
+    <li>[: This will save the current point, this is useful for creating branched fractals</li>
+    <li>]: This will restore the point back to where it was saved after calling [</li>
+</ul>
+<p>
+    See below for examples:
+</p>
+<table>
+    <tr>
+        <td>Algorithm name</td>
+        <td>Rule A</td>
+        <td>Rule B</td>
+        <td>Axiom</td>
+        <td>String to draw</td>
+        <td>Starting angle</td>
+        <td>Rotational angle</td>
+        <td>Iterations</td>
+        <td>Line length</td>
+        <td>Line length multiplier</td>
+    </tr>
+    <tr>
+        <td>One</td>
+        <td>[B]+F++F-[B]+B+++</td>
+        <td>F++F-F+F</td>
+        <td>A</td>
+        <td>ABABABA</td>
+        <td>60</td>
+        <td>30</td>
+        <td>4</td>
+        <td>20</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>Two</td>
+        <td>F++F-F[B]--F++</td>
+        <td>F++F-F+F</td>
+        <td>A</td>
+        <td>ABBABAAB</td>
+        <td>60</td>
+        <td>30</td>
+        <td>4</td>
+        <td>20</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>Three</td>
+        <td>F[BFF+]F--</td>
+        <td>FF--F+FF</td>
+        <td>A</td>
+        <td>ABBBA</td>
+        <td>60</td>
+        <td>30</td>
+        <td>5</td>
+        <td>10</td>
+        <td>0</td>
+    </tr>
+</table>
+<p>
+    Press draw a few times and see what kinds of shapes and trails you can come up with!
+    <br>
+    <br>
+    <b><u>RULES:</u></b>
+    <br>
+</p>
+<ul>
+    <li>No blank fields, if you wish to not rotate, do not call + or - in your rules</li>
+    <li>Rule B cannot call Rule A if Rule A is calling Rule B.</li>
+    <li>The program will not draw if you haven't clicked on the canvas and set a point.</li>
+</ul>
+<hr>
+<label for="ruleA">A = Primary rule in terms of F, +, - or B </label>
+<input id="ruleA" name="ruleA" value="[B]+F++F-[B]+B+++" type="text" onchange="onInputChange()"/>
+<br>
+<label for="ruleB">B = Secondary rule in terms of F, +, - </label>
+<input id="ruleB" name="ruleB" value="F++F-F+F" type="text" onchange="onInputChange()"/>
+<br>
+<label for="drawRuleBox">String to draw in terms of A and B: </label>
+<input id="drawRuleBox" name="drawRuleBox" value="ABABABA" type="text" onchange="onInputChange()"/>
+<br>
+<br>
+<label for="lineLength">Line length: </label>
+<input id="lineLength" name="lineLength" value="20" type="number" onchange="onInputChange()"/>
+<br>
+<label for="angle">Rotation angle: </label>
+<input id="angle" name="angle" value="30" min="0" max="359" type="number" onchange="onInputChange()"/>
+<br>
+<label for="startAngle">Starting angle: </label>
+<input id="startAngle" name="startAngle" value="60" min="0" max="359" type="number" onchange="onInputChange()"/>
+<br>
+<br>
+Initial rule (axiom)
+<br>
+<label for="ruleARadio">Rule A</label>
+<input id="ruleARadio" name="ruleRadioGroup" type="radio" onchange="onInputChange()"/>
+<label for="ruleBRadio">Rule B</label>
+<input id="ruleBRadio" name="ruleRadioGroup" type="radio" onchange="onInputChange()"/>
+<br>
+<br>
+<label for="iterations">Number of iterations</label>
+<input id="iterations" type="range" name="iterations" min="1" max="8" value="1" onchange=""/>
+<br>
+<label for="iterationMultiplier">Percentage multiplier for line length: </label>
+<input id="iterationMultiplier" name="iterationMultiplier" value="10" min="0" max="100" type="number"
+       onchange="onInputChange()"/>
+<br>
+<button id="drawFractalBtn" name="drawFractalBtn" onmousedown="errorFinder(); drawFractal()">Draw fractal</button>
+<button id="resetFractalBtn" name="resetFractalBtn" onmousedown="resetFractal()">Reset canvas</button>
+<br>
+<br>
+Mouse position
+<br>
+<label id="mouseX"></label>
+<label id="mouseY"></label>
+<br>
+Mouse float
+<br>
+<label id="mouseFloatX"></label>
+<label id="mouseFloatY"></label>
+<br>
+<p id="l-systemerrormsg"></p>
+<canvas id='experimentLSystemCanvas'
+        width="1200" height="600"
+        style="border:1px solid #000000"
+        onmousemove="lSystemCanvasOnMouseOver(event)"
+        onmousedown="lSystemCanvasOnClick(event)">
+</canvas>
+</body>
+</html>
