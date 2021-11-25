@@ -2,7 +2,7 @@ body {
     --nav-width: 15%;
     margin: 0 0 0 var(--nav-width);
     padding-left: 15px;
-    font-family: Arial;
+    font-family: Arial, serif;
     font-size: 15px;
 }
 
@@ -37,4 +37,8 @@ ul {
 .navigation__link:active {
     background-color: darkslateblue;
     color: white;
+}
+
+table, th, td {
+    border: 1px solid black;
 }
