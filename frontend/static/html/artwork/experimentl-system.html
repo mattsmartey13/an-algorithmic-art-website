@@ -6,9 +6,7 @@
     As my first bespoke piece, I have given the user the opportunity to create their own fractal patterns using a rule
     builder.
     <br>
-    This system is able to iterate 1 to 8 times using two rule-sets that the user has control over.
-    <br>
-    The user then will input combinations of A and B in the string, choose line length and then press draw!
+    To begin, please define two rules in terms of F, +, -, [ and ].
     <br>
     The alphabet for this system goes as follows:
     <br>
@@ -17,12 +15,11 @@
     <li>F: This will draw a line going in the direction assigned.</li>
     <li>+: This will turn the pointer clockwise by the number of degrees assigned.</li>
     <li>-: This will turn the pointer anticlockwise by the direction assigned</li>
-    <li>A: This will make a recursive call to Rule A</li>
-    <li>B: This will make a recursive call to Rule B</li>
     <li>[: This will save the current point, this is useful for creating branched fractals</li>
     <li>]: This will restore the point back to where it was saved after calling [</li>
 </ul>
 <p>
+    Note that each iteration will decrease the line length and width by 20%.
     See below for examples:
 </p>
 <table>
@@ -31,78 +28,58 @@
         <td>Rule A</td>
         <td>Rule B</td>
         <td>Axiom</td>
-        <td>String to draw</td>
+        <td>A will be followed by</td>
+        <td>B will be followed by</td>
         <td>Starting angle</td>
         <td>Rotational angle</td>
         <td>Iterations</td>
         <td>Line length</td>
-        <td>Line length multiplier</td>
     </tr>
     <tr>
         <td>One</td>
-        <td>[B]+F++F-[B]+B+++</td>
-        <td>F++F-F+F</td>
+        <td>F[++FF-F]--FF</td>
+        <td>FFF--F[F--FF+F]+FF</td>
         <td>A</td>
-        <td>ABABABA</td>
+        <td>ABAAB</td>
+        <td>BBABA</td>
         <td>60</td>
-        <td>30</td>
-        <td>4</td>
+        <td>60</td>
+        <td>3</td>
         <td>20</td>
-        <td>0</td>
-    </tr>
-    <tr>
-        <td>Two</td>
-        <td>F++F-F[B]--F++</td>
-        <td>F++F-F+F</td>
-        <td>A</td>
-        <td>ABBABAAB</td>
-        <td>60</td>
-        <td>30</td>
-        <td>4</td>
-        <td>20</td>
-        <td>0</td>
-    </tr>
-    <tr>
-        <td>Three</td>
-        <td>F[BFF+]F--</td>
-        <td>FF--F+FF</td>
-        <td>A</td>
-        <td>ABBBA</td>
-        <td>60</td>
-        <td>30</td>
-        <td>5</td>
-        <td>10</td>
-        <td>0</td>
     </tr>
 </table>
 <p>
-    Press draw a few times and see what kinds of shapes and trails you can come up with!
-    <br>
     <br>
     <b><u>RULES:</u></b>
     <br>
 </p>
 <ul>
-    <li>No blank fields, if you wish to not rotate, do not call + or - in your rules</li>
-    <li>Rule B cannot call Rule A if Rule A is calling Rule B.</li>
+    <li>No blank fields!</li>
     <li>The program will not draw if you haven't clicked on the canvas and set a point.</li>
+    <li>The program will not draw if you haven't selected an axiom to start off the drawing.</li>
+    <li>The program will not draw if you are not following the alphabet in the rules.</li>
+    <li>The program will not draw if your recursive calls include characters other than A or B.</li>
+    <li><b>Please note the algorithm is case-sensitive and will not take on f's, a's or b's.</b></li>
 </ul>
 <hr>
-<label for="ruleA">A = Primary rule in terms of F, +, - or B </label>
-<input id="ruleA" name="ruleA" value="[B]+F++F-[B]+B+++" type="text" onchange="onInputChange()"/>
+<label for="ruleA">A = Primary rule in terms of F, +, -, [, ] </label>
+<input id="ruleA" name="ruleA" value="F[++FF-F]--FF" type="text" onchange="onInputChange()"/>
 <br>
-<label for="ruleB">B = Secondary rule in terms of F, +, - </label>
-<input id="ruleB" name="ruleB" value="F++F-F+F" type="text" onchange="onInputChange()"/>
+<label for="ruleB">B = Secondary rule in terms of F, +, -, [, ] </label>
+<input id="ruleB" name="ruleB" value="FFF--F[F--FF+F]+FF" type="text" onchange="onInputChange()"/>
 <br>
-<label for="drawRuleBox">String to draw in terms of A and B: </label>
-<input id="drawRuleBox" name="drawRuleBox" value="ABABABA" type="text" onchange="onInputChange()"/>
+<label for="ruleABecomes">Rule A is followed by:</label>
+<input id="ruleABecomes" name="drawRuleBox" value="ABABB" type="text" onchange="onInputChange()"/>
+<br>
+<label for="ruleBBecomes">Rule B is followed by: </label>
+<input id="ruleBBecomes" name="drawRuleBox" value="BBABA" type="text" onchange="onInputChange()"/>
 <br>
 <br>
 <label for="lineLength">Line length: </label>
 <input id="lineLength" name="lineLength" value="20" type="number" onchange="onInputChange()"/>
 <br>
 <label for="angle">Rotation angle: </label>
-<input id="angle" name="angle" value="30" min="0" max="359" type="number" onchange="onInputChange()"/>
+<input id="angle" name="angle" value="60" min="0" max="359" type="number" onchange="onInputChange()"/>
 <br>
 <label for="startAngle">Starting angle: </label>
 <input id="startAngle" name="startAngle" value="60" min="0" max="359" type="number" onchange="onInputChange()"/>
@@ -119,12 +96,8 @@ Initial rule (axiom)
 <label for="iterations">Number of iterations</label>
 <input id="iterations" type="range" name="iterations" min="1" max="8" value="1" onchange=""/>
 <br>
-<label for="iterationMultiplier">Percentage multiplier for line length: </label>
-<input id="iterationMultiplier" name="iterationMultiplier" value="10" min="0" max="100" type="number"
-       onchange="onInputChange()"/>
-<br>
 <button id="drawFractalBtn" name="drawFractalBtn" onmousedown="errorFinder(); drawFractal()">Draw fractal</button>
-<button id="resetFractalBtn" name="resetFractalBtn" onmousedown="resetFractal()">Reset canvas</button>
+<button id="resetFractalBtn" name="resetFractalBtn" onmousedown="resetCanvas()">Reset canvas</button>
 <br>
 <br>
 Mouse position
