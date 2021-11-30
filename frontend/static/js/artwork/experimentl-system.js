@@ -1,12 +1,12 @@
-const language = ['+', '-', '[', ']', 'F', 'A', 'B'];
+const language = /^[F+\-\[\]]*$/;
 const regex = /^[a-bA-B]*$/
 
-let mouse = { x: 0, y: 0 };
-let stashPoint = { x: 0, y: 0 };
-let finalPoint = { x: 0, y: 0 };
+let mouse = {x: 0, y: 0};
+let stashPoint = {x: 0, y: 0};
+let finalPoint = {x: 0, y: 0};
 let stashAngle = 0;
 let finalAngle = 0;
-let fractalNumber = 0;
+let lSystemString = "";
 
 let fractal = {
     angle: 0,
@@ -14,7 +14,6 @@ let fractal = {
     currentAngle: 0,
     lineL: 0,
     iterations: 1,
-    multiplier: 1
 }
 
 let currentPoint = {
@@ -61,75 +60,79 @@ function drawLine(startX, startY) {
 }
 
 function iterateOverRule(canvas, rule) {
-    const noSpaceRule = removeSpaces(rule);
-    const ruleOk = onlyContainsAlphabet(language, noSpaceRule);
-    if (ruleOk) {
-        for (let n in noSpaceRule) {
-            let character = applyRule(noSpaceRule, n);
-            processRuleCharacter(canvas, character);
+    const rules = {
+        A: $("#ruleA").val(),
+        B: $("#ruleB").val()
+    }
+
+    for (let char of rule) {
+        if (char === "A") {
+            processRule(canvas, rules.A);
+        } else if (char === "B") {
+            processRule(canvas, rules.B);
         }
-        finalPoint.x = currentPoint.x;
-        finalPoint.y = currentPoint.y;
-    } else {
-        throw new DOMException(`Please revise your rule: ${rule} so it fits the alphabet provided.`);
     }
 }
 
-function processRuleCharacter(canvas, character) {
-    let temp = parseInt(fractal.currentAngle);
-    switch (character) {
-        case 'F':
-            drawLine(currentPoint.x, currentPoint.y);
-            break;
-        case '+':
-            if (fractal.currentAngle + fractal.angle < 360) {
-                fractal.currentAngle += fractal.angle
-            } else {
-                fractal.currentAngle = ((temp - 360) + fractal.angle);
-            }
-            break;
-        case'-':
-            if (fractal.currentAngle - fractal.angle >= 0) {
-                fractal.currentAngle -= fractal.angle;
-            } else {
-                fractal.currentAngle = (temp - fractal.angle + 360);
-            }
-            break;
-        case '[':
-            stashPoint.x = currentPoint.x;
-            stashPoint.y = currentPoint.y;
-            stashAngle = fractal.currentAngle;
-            break;
-        case ']':
-            currentPoint.x = stashPoint.x;
-            currentPoint.y = stashPoint.y;
-            fractal.currentAngle = stashAngle;
-            break;
-        case 'A':
-            iterateOverRule(canvas, $("#ruleA").val())
-            break;
-        case 'B':
-            iterateOverRule(canvas, $("#ruleB").val())
-            break;
+function processRule(canvas, rule) {
+    for (let character of rule) {
+        parseInt(fractal.currentAngle);
+        let temp = fractal.currentAngle
+        switch (character) {
+            case 'F':
+                drawLine(currentPoint.x, currentPoint.y);
+                break;
+            case '+':
+                if (fractal.currentAngle + fractal.angle < 360) {
+                    fractal.currentAngle += fractal.angle
+                } else {
+                    fractal.currentAngle = ((temp - 360) + fractal.angle);
+                }
+                console.log(`Current angle: ${fractal.currentAngle}`);
+                break;
+            case'-':
+                if (fractal.currentAngle - fractal.angle >= 0) {
+                    fractal.currentAngle -= fractal.angle;
+                } else {
+                    fractal.currentAngle = (temp - fractal.angle + 360);
+                }
+                console.log(`Current angle: ${fractal.currentAngle}`);
+                break;
+            case '[':
+                stashPoint.x = currentPoint.x;
+                stashPoint.y = currentPoint.y;
+                stashAngle = fractal.currentAngle;
+                break;
+            case ']':
+                currentPoint.x = stashPoint.x;
+                currentPoint.y = stashPoint.y;
+                fractal.currentAngle = stashAngle;
+                break;
+        }
     }
 }
 
 function drawFractal() {
+    lSystemString = "";
+    returnAxiom();
     const canvas = document.getElementById("experimentLSystemCanvas");
-    const stringToDraw = $("#drawRuleBox").val();
-    const axiom = returnAxiom();
+    const ruleA = $("#ruleA").val();
+    const ruleB = $("#ruleB").val();
+    const ruleABecomes = $("#ruleABecomes").val();
+    const ruleBBecomes = $("#ruleBBecomes").val();
 
     fractal.angle = parseInt($("#angle").val());
     fractal.startAngle = parseInt($("#startAngle").val());
-
-    if(fractalNumber === 0) {
-        fractal.lineL = parseInt($("#lineLength").val());
-    }
-
-    fractal.multiplier = parseInt($("#iterationMultiplier").val());
+    fractal.lineL = parseInt($("#lineLength").val());
     fractal.iterations = parseInt($("#iterations").val());
 
-    if(testRegex(stringToDraw)) {
+
+    if (
+        testRegex(ruleABecomes, ruleBBecomes) &&
+        testRuleCharacters(ruleA, ruleB) &&
+        validateAngle(fractal.angle) &&
+        validateAngle(fractal.startAngle)
+    ) {
         if (currentPoint.x === mouse.x && currentPoint.y === mouse.y) {
             fractal.currentAngle = fractal.startAngle;
         } else {
@@ -138,27 +141,18 @@ function drawFractal() {
             currentPoint.y = finalPoint.y;
         }
 
-        iterateOverRule(canvas, axiom);
-        currentPoint.x = finalPoint.x;
-        currentPoint.y = finalPoint.y;
-        for (let i = 0; i < fractal.iterations; i++) {
-            fractal.lineL *= ((fractal.multiplier / 100) + 1);
-            iterateOverRule(canvas, stringToDraw);
-            currentPoint.x = finalPoint.x;
-            currentPoint.y = finalPoint.y;
-        }
+        lSystemString = lSystemGenerate(lSystemString, fractal.iterations);
+        iterateOverRule(canvas, lSystemString);
 
         finalPoint.x = currentPoint.x;
         finalPoint.y = currentPoint.y;
         finalAngle = fractal.currentAngle;
-        fractalNumber++;
     }
 }
 
-function resetFractal() {
+function resetCanvas() {
     const canvas = document.getElementById('experimentLSystemCanvas');
     const context = canvas.getContext('2d');
-
     currentPoint.x = mouse.x;
     currentPoint.y = mouse.y;
     finalPoint.x = 0;
@@ -166,40 +160,48 @@ function resetFractal() {
     finalAngle = 0;
     fractal.currentAngle = 0
     fractal.lineL = parseInt($("#lineLength").val());
-    fractalNumber = 0;
+    lSystemString = "";
 
     context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function returnAxiom() {
-    const rules = {
-        A: $("#ruleA").val(),
-        B: $("#ruleB").val()
-    }
-
     if ($("#ruleARadio").prop("checked")) {
-        return rules.A;
+        lSystemString = "A"
+        return lSystemString;
     } else if ($("#ruleBRadio").prop("checked")) {
-        return rules.B;
+        lSystemString = "B";
+        return lSystemString;
     } else {
         return undefined;
     }
 }
 
+function lSystemCompute(string) {
+    const ruleABecomes = $("#ruleABecomes").val();
+    const ruleBBecomes = $("#ruleBBecomes").val();
+    let newString = "";
+    for (let character of string) {
+        if (character === "A") {
+            newString += ruleABecomes;
+        } else if (character === "B") {
+            newString += ruleBBecomes;
+        }
+    }
+    return newString;
+}
+
+function lSystemGenerate(string, iterations) {
+    for (let iter = 0; iter < iterations; iter++) {
+        fractal.lineL *= 0.8;
+        string = lSystemCompute(string);
+    }
+    return string;
+}
+
+
 function validateAngle(angle) {
-    return !(angle > 360 || angle < 0);
-}
-
-function applyRule(rule, char) {
-    return rule[char];
-}
-
-function removeSpaces(ruleString) {
-    return ruleString.split(' ').join('').split('');
-}
-
-function onlyContainsAlphabet(alphabet, ruleArray) {
-    return ruleArray.every(element => alphabet.includes(element));
+    return (angle < 360 && angle > 0) === true;
 }
 
 function degreeToRadian(degrees) {
@@ -212,38 +214,29 @@ function getRandomColour() {
 
 function errorFinder() {
     let error = "";
-    let errorMessage = document.getElementById('l-systemerrormsg');
-    let startAngle = parseInt($("#startAngle").val());
-    let rotationAngle = parseInt($("#angle").val());
-    let lineLength = parseInt($("#lineLength").val());
-    let axiom = returnAxiom();
-    let ruleA = $("#ruleA").val();
-    let ruleB = $("#ruleB").val();
-    let ruleString = $("#drawRuleBox").val();
+    const errorMessage = document.getElementById('l-systemerrormsg');
+    const startAngle = parseInt($("#startAngle").val());
+    const rotationAngle = parseInt($("#angle").val());
+    const lineLength = parseInt($("#lineLength").val());
+    const ruleA = $("#ruleA").val();
+    const ruleB = $("#ruleB").val();
+    const ruleABecomes = $("#ruleABecomes").val();
+    const ruleBBecomes = $("#ruleBBecomes").val();
     try {
-        if (startAngle > 360 || startAngle < 0) {
+        if (!validateAngle(startAngle)) {
             error += `<br> ${startAngle} is not within the 0-360 bounds for the starting angle.`
         }
-        if (rotationAngle > 360 || rotationAngle < 0) {
+        if (!validateAngle(rotationAngle)) {
             error += `<br> ${rotationAngle} is not within the 0-360 bounds for the rotational angle.`
         }
-        if (axiom === undefined) {
+        if (returnAxiom() === undefined) {
             error += `<br> You need to select an axiom to kickstart your drawing.`
         }
-        if (ruleA === "" && ruleString.includes("A")) {
-            error += `<br> You need to define rule A if you want to include it in the string.`
+        if (!testRuleCharacters(ruleA, ruleB)) {
+            error += `<br> You need to specify what rule A and B are in terms of F, + or - with no spaces.`
         }
-        if (ruleB === "" && ruleString.includes("B")) {
-            error += `<br> You need to define rule B if you want to include it in the string.`
-        }
-        if (ruleB.includes("A") && ruleA.includes("B")) {
-            error += `<br> You are calling Rule A in B and Rule B in A. This will cause the program to crash!`
-        }
-        if (ruleString === "") {
-            error += `<br> Your algorithm is blank.`
-        }
-        if (!testRegex(ruleString)) {
-            error += `<br> Please enter in terms of A and B your algorithm.`
+        if (!testRegex(ruleABecomes, ruleBBecomes)) {
+            error += `<br> Recursive rule calling needs to be defined in terms of A or B with no spaces.`
         }
         if (lineLength <= 0) {
             error += `<br> You cannot draw a fractal with a line length of 0 or below!`
@@ -262,8 +255,12 @@ function onInputChange() {
     errorMessage.innerHTML = "";
 }
 
-function testRegex(ruleString) {
-    return regex.test(ruleString) === true;
+function testRegex(ruleString1, ruleString2) {
+    return regex.test(ruleString1) && regex.test(ruleString2) === true;
+}
+
+function testRuleCharacters(ruleChar1, ruleChar2) {
+    return language.test(ruleChar1) && language.test(ruleChar2) === true;
 }
 
 
