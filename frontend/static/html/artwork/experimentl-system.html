@@ -34,6 +34,7 @@
         <td>Rotational angle</td>
         <td>Iterations</td>
         <td>Line length</td>
+        <td>Multiplier</td>
     </tr>
     <tr>
         <td>One</td>
@@ -46,6 +47,7 @@
         <td>60</td>
         <td>3</td>
         <td>20</td>
+        <td>1</td>
     </tr>
 </table>
 <p>
@@ -96,6 +98,8 @@ Initial rule (axiom)
 <label for="iterations">Number of iterations</label>
 <input id="iterations" type="range" name="iterations" min="1" max="8" value="1" onchange=""/>
 <br>
+<label for="multiplier">Multiplier: </label>
+<input id="multiplier" name="multiplier" value="1" min="0.1" max="2" type="number" onchange="onInputChange()"/>
 <button id="drawFractalBtn" name="drawFractalBtn" onmousedown="errorFinder(); drawFractal()">Draw fractal</button>
 <button id="resetFractalBtn" name="resetFractalBtn" onmousedown="resetCanvas()">Reset canvas</button>
 <br>

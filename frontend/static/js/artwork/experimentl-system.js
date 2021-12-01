@@ -14,6 +14,7 @@ let fractal = {
     currentAngle: 0,
     lineL: 0,
     iterations: 1,
+    multiplier: 1
 }
 
 let currentPoint = {
@@ -123,13 +124,15 @@ function drawFractal() {
     fractal.startAngle = parseInt($("#startAngle").val());
     fractal.lineL = parseInt($("#lineLength").val());
     fractal.iterations = parseInt($("#iterations").val());
-
+    fractal.multiplier = parseFloat($("#multiplier").val());
 
     if (
         testRegex(ruleABecomes, ruleBBecomes) &&
         testRuleCharacters(ruleA, ruleB) &&
         validateAngle(fractal.angle) &&
-        validateAngle(fractal.startAngle)
+        validateAngle(fractal.startAngle) &&
+        validateMultiplier(fractal.multiplier) &&
+        validateLineLength(fractal.lineL)
     ) {
         if (currentPoint.x === mouse.x && currentPoint.y === mouse.y) {
             fractal.currentAngle = fractal.startAngle;
@@ -144,6 +147,7 @@ function drawFractal() {
         finalPoint.y = currentPoint.y;
         finalAngle = fractal.currentAngle;
     }
+    console.log(`${fractal.multiplier} is bigger than 0 = ${fractal.multiplier > 0}`);
 }
 
 function resetCanvas() {
@@ -191,21 +195,8 @@ function lSystemGenerate(canvas, string, iterations) {
     for (let iter = 0; iter < iterations; iter++) {
         string = lSystemCompute(string);
         iterateOverRule(canvas, string);
-        fractal.lineL *= 0.8;
+        fractal.lineL *= fractal.multiplier;
     }
-}
-
-
-function validateAngle(angle) {
-    return (angle < 360 && angle > 0) === true;
-}
-
-function degreeToRadian(degrees) {
-    return degrees * (Math.PI / 180);
-}
-
-function getRandomColour() {
-    return "#" + Math.floor(Math.random() * 16777215).toString(16);
 }
 
 function errorFinder() {
@@ -218,6 +209,7 @@ function errorFinder() {
     const ruleB = $("#ruleB").val();
     const ruleABecomes = $("#ruleABecomes").val();
     const ruleBBecomes = $("#ruleBBecomes").val();
+    const multiplier = $("#multiplier").val();
     try {
         if (!validateAngle(startAngle)) {
             error += `<br> ${startAngle} is not within the 0-360 bounds for the starting angle.`
@@ -234,16 +226,31 @@ function errorFinder() {
         if (!testRegex(ruleABecomes, ruleBBecomes)) {
             error += `<br> Recursive rule calling needs to be defined in terms of A or B with no spaces.`
         }
-        if (lineLength <= 0) {
+        if (!validateLineLength(lineLength)) {
             error += `<br> You cannot draw a fractal with a line length of 0 or below!`
         }
         if (mouse.x === 0 && mouse.y === 0) {
             error += `<br> Please click on the canvas to initialise a point.`
         }
+        if (!validateMultiplier(multiplier)) {
+            error += `<br> THe multiplier has to be below 2 and larger than 0.1.`
+        }
         throw Error(error);
     } catch {
         errorMessage.innerHTML = error;
     }
+}
+
+function validateAngle(angle) {
+    return (angle < 360 && angle > 0) === true;
+}
+
+function degreeToRadian(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
+function getRandomColour() {
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
 }
 
 function onInputChange() {
@@ -259,6 +266,13 @@ function testRuleCharacters(ruleChar1, ruleChar2) {
     return language.test(ruleChar1) && language.test(ruleChar2) === true;
 }
 
+function validateMultiplier(multiplier) {
+    return multiplier <= 2 && multiplier > 0;
+}
+
+function validateLineLength(lineLength) {
+    return lineLength > 0;
+}
 
 
 
