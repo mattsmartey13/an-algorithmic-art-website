@@ -138,9 +138,7 @@ function drawFractal() {
             currentPoint.x = finalPoint.x;
             currentPoint.y = finalPoint.y;
         }
-
-        lSystemString = lSystemGenerate(lSystemString, fractal.iterations);
-        iterateOverRule(canvas, lSystemString);
+        lSystemGenerate(canvas, lSystemString, fractal.iterations);
 
         finalPoint.x = currentPoint.x;
         finalPoint.y = currentPoint.y;
@@ -189,12 +187,12 @@ function lSystemCompute(string) {
     return newString;
 }
 
-function lSystemGenerate(string, iterations) {
+function lSystemGenerate(canvas, string, iterations) {
     for (let iter = 0; iter < iterations; iter++) {
-        fractal.lineL *= 0.8;
         string = lSystemCompute(string);
+        iterateOverRule(canvas, string);
+        fractal.lineL *= 0.8;
     }
-    return string;
 }
 
 
