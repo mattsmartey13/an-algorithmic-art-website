@@ -88,7 +88,6 @@ function processRule(canvas, rule) {
                 } else {
                     fractal.currentAngle = ((temp - 360) + fractal.angle);
                 }
-                console.log(`Current angle: ${fractal.currentAngle}`);
                 break;
             case'-':
                 if (fractal.currentAngle - fractal.angle >= 0) {
@@ -96,7 +95,6 @@ function processRule(canvas, rule) {
                 } else {
                     fractal.currentAngle = (temp - fractal.angle + 360);
                 }
-                console.log(`Current angle: ${fractal.currentAngle}`);
                 break;
             case '[':
                 stashPoint.x = currentPoint.x;

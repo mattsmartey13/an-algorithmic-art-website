@@ -35,12 +35,9 @@ function drawLindenmayer(startX, startY, len, angle, branchWidth) {
         context.restore();
         return;
     }
-
-    //recursive call to create left branch 15 deg to side
+    //recursive call to create left & right branches 10 deg to side
     //shrink len and branch width by 20% each time
     drawLindenmayer(0, -len, len * 0.8, angle + 10, branchWidth * 0.8);
-    //recursive call to create right branch 15 deg to side
-    //shrink len by 20% and branch width each time
     drawLindenmayer(0, -len, len * 0.8, angle - 10, branchWidth * 0.8);
 
     //final branches are a copy of the original state
