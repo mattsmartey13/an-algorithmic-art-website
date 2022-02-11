@@ -22,7 +22,7 @@ let currentPoint = {
     'y': mouse.y,
 }
 
-function lSystemCanvasOnMouseOver(event) {
+function lSystemCanvasOnMouseOver() {
     const canvas = document.getElementById('experimentLSystemCanvas');
     let rect = canvas.getBoundingClientRect();
     $("#mouseFloatX").html("X: " + Math.round((event.clientX - rect.left) / (rect.right - rect.left) * canvas.width));
@@ -147,7 +147,6 @@ function drawFractal() {
         finalPoint.y = currentPoint.y;
         finalAngle = fractal.currentAngle;
     }
-    console.log(`${fractal.multiplier} is bigger than 0 = ${fractal.multiplier > 0}`);
 }
 
 function resetCanvas() {
