@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Garden of L-systems</title>
+</head>
+<body>
+<button id="garden-setup-btn" name="garden-setup-btn" onmousedown="gardenSetup()">Setup soil and grass layers</button>
+<button id="type-tree" name="garden-type-btn" onclick="setPlantProperties('tree')">Set type to tree</button>
+<button id="type-shoot" name="garden-type-btn" onclick="setPlantProperties('grass')">Set type to grass</button>
+<button id="type-flower" name="garden-type-btn" onclick="setPlantProperties('shoot')">Set type to shoot</button>
+<button id="type-cloud" name="garden-type-btn" onclick="setPlantProperties('cloud')">Set type to cloud</button>
+<button id="type-grass" name="garden-type-btn" onclick="setPlantProperties('flower')">Set type to flower</button>
+<button id="garden-clear-canvas-btn" name="garden-clear-canvas-btn" onclick="resetGardenCanvas()">Clear canvas</button>
+<br>
+<p>
+    Mouse position
+    <label id="gardenMouseX"></label>
+    <label id="gardenMouseY"></label>
+</p>
+<br>
+<p>
+    Mouse float
+    <label id="gardenMouseFloatX"></label>
+    <label id="gardenMouseFloatY"></label>
+</p>
+<h4>Current type is:</h4>
+<p id="garden-type-output"></p>
+<canvas id="garden-canvas"
+            width="800"
+            height="400"
+            style="border:1px solid #000000"
+            onmousemove="gardenCanvasOnMouseOver()"
+            onmousedown="gardenCanvasOnClick(event)">
+</canvas>
+<br>
+</body>
+</html>
