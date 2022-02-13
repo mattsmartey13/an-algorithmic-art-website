@@ -82,7 +82,7 @@ function gardenSetup() {
 
 /**
  * Uses the rule generator and interpreter to create our plant
- * Used when the canvas is setup and the user clicks the canvas
+ * Used when the canvas is set up and the user clicks the canvas
  */
 function generateGardenComponent() {
     const lSystemRule = ruleGenerator(currentType.name);
@@ -120,81 +120,13 @@ function generateGardenComponent() {
  * @returns {*[]}
  */
 function ruleGenerator(type) {
-    let gardenRuleArray = [], tempLang = [];
     const ct = currentType;
-    /**
-     * Determine string length, number and length of possible branches.
-     * @returns {number}
-     */
-    switch (type) {
-        case "flower":
-            ct.branches = 1;
-            ct.branchLength = 4;
-            ct.stringLength = 20;
-            ct.branchLikely = 0.7;
-            ct.branchStartIndex = 5;
-            ct.branchEndIndex = 15;
-            break;
-        case "shoot":
-            ct.branches = 1;
-            ct.branchLength = 3;
-            ct.stringLength = 12;
-            ct.branchLikely = 0.9;
-            ct.branchStartIndex = 5;
-            ct.branchEndIndex = 10
-            break;
-        case "tree":
-            ct.branches = 6;
-            ct.branchLength = 15;
-            ct.stringLength = 100;
-            ct.branchLikely = 0.8;
-            ct.branchStartIndex = 10;
-            ct.branchEndIndex = 80;
-            break;
-        case "cloud":
-            ct.branches = 0;
-            ct.stringLength = 15;
-            ct.branchStartIndex = 5;
-            ct.branchEndIndex = 15;
-            break;
-        case "grass":
-            ct.branches = 0;
-            ct.stringLength = 10;
-            ct.branchStartIndex = 5;
-            ct.branchEndIndex = 10;
-            break;
-        default:
-            ct.branches = 0;
-            ct.stringLength = 14;
-    }
-
-    /**
-     * Generate semi-random assortment of F, + and -.
-     */
-    for (let i = 0; i < currentType.stringLength; i++) {
-        let ruleInput, tempLangIndex;
-        if (i < currentType.branchStartIndex) {
-            ruleInput = "F";
-        } else if (gardenRuleArray[i - 1] !== "F" && gardenRuleArray[i - 2] !== "F") {
-            ruleInput = "F";
-        } else {
-            if (gardenRuleArray[i - 1] === "+") {
-                tempLang = ["F", "+"];
-            } else if (gardenRuleArray[i - 1] === "-") {
-                tempLang = ["F", "-"];
-            } else {
-                tempLang = gardenLanguage;
-            }
-            tempLangIndex = Math.floor(Math.random() * tempLang.length);
-            ruleInput = tempLang[tempLangIndex];
-        }
-        gardenRuleArray.push(ruleInput)
-    }
+    let gardenRuleArray = generatePlantString(ct.stringLength, ct.branchStartIndex);
 
     /**
      * Insert brackets where it is worthwhile to, based on the type's given likeliness.
      */
-    let currentBranches = Math.round(currentType.branches * Math.random());
+    let currentBranches = Math.round(ct.branches * Math.random());
     for (let i = ct.branchStartIndex; i < ct.branchEndIndex; i++) {
         const branchSize = randomNumberBetweenRange(i, i + ct.branchLength);
         const likely = Math.random();
@@ -207,6 +139,60 @@ function ruleGenerator(type) {
     }
     return gardenRuleArray;
 }
+
+/**
+ * Set the type of the fractal based on the button pressed by the user
+ * Will assign the parameters of the length, width, colour of lines, rotation degree etc
+ * @param typeName
+ */
+function setPlantProperties(typeName) {
+    const gardenCanvas = document.getElementById('garden-canvas');
+    const gardenContext = gardenCanvas.getContext('2d');
+    const ct = currentType, gcp = gardenCurrentPoint;
+    ct.name = typeName;
+
+    switch (ct.name) {
+        case "flower":
+            gardenContext.strokeStyle = "#446327";
+            setBaseFlowerSettings();
+            break;
+        case "tree":
+            gardenContext.strokeStyle = "#6e4300";
+            gardenContext.fillStyle = "#087000";
+            setBaseTreeSettings();
+            break;
+        case "shoot":
+            gardenContext.strokeStyle = "#25523b";
+            gardenContext.fillStyle = "#5aab61";
+            setBaseShootSettings();
+            break;
+        case "cloud":
+            gardenContext.strokeStyle = "#81a5ba";
+            setBaseCloudSettings();
+            break;
+        case "grass":
+            gardenContext.strokeStyle = "#348C31";
+            gardenContext.fillStyle = "#348C31";
+            setBaseGrassSettings();
+            break;
+        default:
+            gcp.degrees = 270;
+            ct.branches = 0;
+            ct.stringLength = 14;
+            ct.rotationAngle = 0;
+            ct.length = 1;
+            ct.width = 1;
+            ct.rotationAngle = 0;
+            ct.minAngle = 0;
+            ct.maxAngle = 0;
+            gardenContext.strokeStyle = "#000000";
+            gardenContext.fillStyle = "#000000";
+            break;
+    }
+    gardenContext.save();
+    document.getElementById('garden-type-output').innerHTML = ct.name;
+}
+
 
 /**
  * Processes the individual pieces of the fractal to generate line, rotation, stashing and restoring of branches
@@ -274,85 +260,8 @@ function interpretRule(gardenRuleArray) {
     }
 }
 
-
 /**
- * Set the type of the fractal based on the button pressed by the user
- * Will assign the parameters of the length, width, colour of lines, rotation degree etc
- * @param typeName
- */
-function setPlantProperties(typeName) {
-    const gardenCanvas = document.getElementById('garden-canvas');
-    const gardenContext = gardenCanvas.getContext('2d');
-    const ct = currentType, gcp = gardenCurrentPoint;
-    ct.name = typeName;
-
-    switch (ct.name) {
-        case "flower":
-            gcp.degrees = 270;
-            ct.rotationAngle = 15;
-            ct.length = 5;
-            ct.width = 2;
-            ct.minAngle = 5;
-            ct.maxAngle = 20;
-            gardenContext.strokeStyle = "#446327";
-            break;
-        case "tree":
-            gcp.degrees = 270;
-            ct.rotationAngle = 30;
-            ct.length = 10;
-            ct.width = 10;
-            ct.minAngle = 10;
-            ct.maxAngle = 50;
-            gardenContext.strokeStyle = "#6e4300";
-            gardenContext.fillStyle = "#087000";
-            break;
-        case "shoot":
-            gcp.degrees = 270;
-            ct.rotationAngle = 20;
-            ct.length = 5;
-            ct.width = 1.5;
-            ct.minAngle = 5;
-            ct.maxAngle = 20;
-            gardenContext.strokeStyle = "#25523b";
-            gardenContext.fillStyle = "#5aab61";
-            break;
-        case "cloud":
-            gcp.degrees = 0;
-            ct.rotationAngle = 15;
-            ct.length = 12;
-            ct.width = 10;
-            ct.minAngle = 5;
-            ct.maxAngle = 20;
-            gardenContext.strokeStyle = "#81a5ba";
-            break;
-        case "grass":
-            gcp.degrees = 270;
-            ct.rotationAngle = 5;
-            ct.length = 2.5;
-            ct.width = 1.5;
-            ct.minAngle = 1;
-            ct.maxAngle = 10;
-            gardenContext.strokeStyle = "#348C31";
-            gardenContext.fillStyle = "#348C31";
-            break;
-        default:
-            gcp.degrees = 270;
-            ct.rotationAngle = 0;
-            ct.length = 1;
-            ct.width = 1;
-            ct.rotationAngle = 0;
-            ct.minAngle = 0;
-            ct.maxAngle = 0;
-            gardenContext.strokeStyle = "#000000";
-            gardenContext.fillStyle = "#000000";
-            break;
-    }
-    gardenContext.save();
-    document.getElementById('garden-type-output').innerHTML = ct.name;
-}
-
-/**
- * Straight line for everything except clouds, clouds will use bezier curves
+ * Straight line for everything except clouds, clouds will use Bezier curves
  *
  * @param startX
  * @param startY
@@ -402,7 +311,7 @@ function drawLeaf(x, y, angle, rot) {
     gardenContext.beginPath();
     gardenContext.arc(x, y, ct.length * 0.8, angle, rot);
     gardenContext.fill();
-    gardenContext.closePath()
+    gardenContext.closePath();
 }
 
 /**
@@ -496,5 +405,116 @@ function validateDynamicPlantIntegers() {
  */
 function randomNumberBetweenRange(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
+}
+
+/**
+ * Generate semi-random assortment of F, + and -.
+ */
+function generatePlantString(stringLength, branchStartIndex) {
+    let gardenRuleArray = [], tempLang = [];
+
+    for (let i = 0; i < stringLength; i++) {
+        let ruleInput, tempLangIndex;
+        if (i < branchStartIndex) {
+            ruleInput = "F";
+        } else if (gardenRuleArray[i - 1] !== "F" && gardenRuleArray[i - 2] !== "F") {
+            ruleInput = "F";
+        } else {
+            if (gardenRuleArray[i - 1] === "+") {
+                tempLang = ["F", "+"];
+            } else if (gardenRuleArray[i - 1] === "-") {
+                tempLang = ["F", "-"];
+            } else {
+                tempLang = gardenLanguage;
+            }
+            tempLangIndex = Math.floor(Math.random() * tempLang.length);
+            ruleInput = tempLang[tempLangIndex];
+        }
+        gardenRuleArray.push(ruleInput)
+    }
+    return gardenRuleArray;
+}
+
+/**
+ * Shoot settings setter
+ */
+function setBaseShootSettings() {
+    gardenCurrentPoint.degrees = 270;
+    currentType.rotationAngle = 20;
+    currentType.length = 5;
+    currentType.width = 1.5;
+    currentType.minAngle = 5;
+    currentType.maxAngle = 20;
+    currentType.branches = 1;
+    currentType.branchLength = 3;
+    currentType.stringLength = 12;
+    currentType.branchLikely = 0.9;
+    currentType.branchStartIndex = 5;
+    currentType.branchEndIndex = 10
+}
+
+/**
+ * Grass settings setter
+ */
+function setBaseGrassSettings() {
+    gardenCurrentPoint.degrees = 270;
+    currentType.rotationAngle = 5;
+    currentType.length = 2.5;
+    currentType.width = 1.5;
+    currentType.minAngle = 1;
+    currentType.maxAngle = 10;
+    currentType.branches = 0;
+    currentType.stringLength = 10;
+    currentType.branchStartIndex = 5;
+    currentType.branchEndIndex = 10;
+}
+
+/**
+ * Cloud settings setter
+ */
+function setBaseCloudSettings() {
+    gardenCurrentPoint.degrees = 0;
+    currentType.rotationAngle = 15;
+    currentType.length = 12;
+    currentType.width = 10;
+    currentType.minAngle = 5;
+    currentType.maxAngle = 20;
+    currentType.branches = 0;
+    currentType.stringLength = 15;
+    currentType.branchStartIndex = 5;
+    currentType.branchEndIndex = 15;
+}
+
+/**
+ * Flower settings setter
+ */
+function setBaseFlowerSettings() {
+    gardenCurrentPoint.degrees = 270;
+    currentType.rotationAngle = 15;
+    currentType.length = 5;
+    currentType.width = 2;
+    currentType.minAngle = 5;
+    currentType.maxAngle = 20;
+    currentType.branches = 1;
+    currentType.branchLength = 4;
+    currentType.stringLength = 20;
+    currentType.branchLikely = 0.7;
+    currentType.branchStartIndex = 5;
+    currentType.branchEndIndex = 15;
+}
+
+function setBaseTreeSettings() {
+    gardenCurrentPoint.degrees = 270;
+    currentType.rotationAngle = 30;
+    currentType.length = 10;
+    currentType.width = 10;
+    currentType.minAngle = 10;
+    currentType.maxAngle = 50;
+    currentType.branches = 6;
+    currentType.branchLength = 15;
+    currentType.stringLength = 100;
+    currentType.branchLikely = 0.8;
+    currentType.branchStartIndex = 10;
+    currentType.branchEndIndex = 80;
 }
 
