@@ -1,6 +1,3 @@
-const gardenLanguage = ["F", "+", "-"];
-Object.freeze(gardenLanguage);
-
 const currentType = {
     name: '',
     rotationAngle: 0,
@@ -36,11 +33,11 @@ let gardenStashPoint = {
 /**
  * On canvas scroll custom event handler
  */
-function gardenCanvasOnMouseOver() {
+function gardenCanvasOnMouseOver(event) {
     const gardenCanvas = document.getElementById('garden-canvas');
-    let gardenCanvasRect = gardenCanvas.getBoundingClientRect();
-    $("#gardenMouseFloatX").html("X: " + Math.round((event.clientX - gardenCanvasRect.left) / (gardenCanvasRect.right - gardenCanvasRect.left) * gardenCanvas.width));
-    $("#gardenMouseFloatY").html("Y: " + Math.round((event.clientY - gardenCanvasRect.top) / (gardenCanvasRect.bottom - gardenCanvasRect.top) * gardenCanvas.height));
+    const coordinates = canvasOnMouseOver(gardenCanvas, event);
+    $("#gardenMouseFloatX").html("X: " + coordinates.x);
+    $("#gardenMouseFloatY").html("Y: " + coordinates.y);
 }
 
 /**
@@ -49,15 +46,11 @@ function gardenCanvasOnMouseOver() {
  */
 function gardenCanvasOnClick(event) {
     const gardenCanvas = document.getElementById('garden-canvas'), ct = currentType, gcp = gardenCurrentPoint;
-    let gardenCanvasRect = gardenCanvas.getBoundingClientRect();
-    let button = document.getElementById('garden-setup-btn');
-    gardenMouse.x = Math.round((event.clientX - gardenCanvasRect.left) / (gardenCanvasRect.right - gardenCanvasRect.left) * gardenCanvas.width);
-    gardenMouse.y = Math.round((event.clientY - gardenCanvasRect.top) / (gardenCanvasRect.bottom - gardenCanvasRect.top) * gardenCanvas.height);
-    gardenCurrentPoint.x = gardenMouse.x;
-    gardenCurrentPoint.y = gardenMouse.y;
+    canvasOnMouseClick(gardenCanvas, event, gardenCurrentPoint, gardenMouse)
     $("#gardenMouseX").html("X: " + gardenMouse.x);
     $("#gardenMouseY").html("Y: " + gardenMouse.y);
 
+    let button = document.getElementById('garden-setup-btn');
     if (button.disabled) {
         setPlantProperties(ct.name);
         generateGardenComponent(ct.name, gcp.x, gcp.y, gcp.degrees, ct.stringLength, ct.length, ct.width);
@@ -109,7 +102,7 @@ function generateGardenComponent(typeName, startX, startY, startAngle, stringLen
  */
 function ruleGenerator(type, length) {
     const ct = currentType;
-    let gardenRuleArray = generatePlantString(length, ct.branchStartIndex);
+    let gardenRuleArray = generateFractalString(length, ct.branchStartIndex);
 
     /**
      * Insert brackets where it is worthwhile to, based on the type's given likeliness.
@@ -169,7 +162,6 @@ function setPlantProperties(typeName) {
     document.getElementById('garden-type-output').innerHTML = ct.name;
 }
 
-
 /**
  * Processes the individual pieces of the fractal to generate line, rotation, stashing and restoring of branches
  * @param gardenRuleArray
@@ -227,21 +219,21 @@ function interpretRule(gardenRuleArray, typeName, currentX, currentY, startAngle
                 break;
             case '+':
                 ct.rotationAngle = randomNumberBetweenRange(ct.minAngle, ct.maxAngle);
-                rotateCurrentPoint(true, ct.rotationAngle);
+                rotatePointDirection(true, ct.rotationAngle, gardenCurrentPoint);
                 break;
             case '-':
                 ct.rotationAngle = randomNumberBetweenRange(ct.minAngle, ct.maxAngle);
-                rotateCurrentPoint(false, ct.rotationAngle);
+                rotatePointDirection(false, ct.rotationAngle, gardenCurrentPoint);
                 break;
             case '[':
-                stashGardenPoint(currentX, currentY, startAngle);
+                setPointFromPoint(gardenStashPoint, currentX, currentY, startAngle);
                 if (ct.minBranches > 0 && lineWidth > 1 && lineLength > 1) {
                     generateGardenComponent(typeName, currentX, currentY, startAngle - ct.rotationAngle, ct.branchLength * 0.8, lineLength * 0.8, lineWidth * 0.8);
                     generateGardenComponent(typeName, currentX, currentY, startAngle + ct.rotationAngle, ct.branchLength * 0.8, lineLength * 0.8, lineWidth * 0.8);
                 }
                 break;
             case ']':
-                restoreGardenPoint(gsp.x, gsp.y, gsp.degrees);
+                setPointFromPoint(gardenCurrentPoint, gardenStashPoint.x, gardenStashPoint.y, gardenStashPoint.degrees);
                 break;
         }
     }
@@ -304,66 +296,11 @@ function drawLeaf(x, y, length, angle, rot) {
 }
 
 /**
- * Rotate angle, true for clockwise, false for anticlockwise
- * @param b
- * @param angle
- */
-function rotateCurrentPoint(b, angle) {
-    parseInt(angle);
-    const gcp = gardenCurrentPoint;
-    const temp = gcp.degrees;
-    if (b === true) {
-        if (gcp.degrees + angle < 360) {
-            gcp.degrees += angle;
-        } else {
-            gcp.degrees = ((temp - 360) + angle);
-        }
-    } else {
-        if (gcp.degrees - angle >= 0) {
-            gcp.degrees -= angle;
-        } else {
-            gcp.degrees = (temp - angle + 360);
-        }
-    }
-}
-
-/**
- * Stash function for the start of a branch
- * @param x
- * @param y
- * @param degrees
- */
-function stashGardenPoint(x, y, degrees) {
-    gardenStashPoint.x = x;
-    gardenStashPoint.y = y;
-    gardenStashPoint.degrees = degrees;
-}
-
-/**
- * Restore function for exiting a branch and going back to the main
- * @param x
- * @param y
- * @param degrees
- */
-function restoreGardenPoint(x, y, degrees) {
-    gardenCurrentPoint.x = x;
-    gardenCurrentPoint.y = y;
-    gardenCurrentPoint.degrees = degrees;
-}
-
-/**
  * Clear the canvas, will also clear the ground - you will need to setup the canvas again
  */
 function resetGardenCanvas() {
     const gardenCanvas = document.getElementById('garden-canvas');
-    const gardenContext = gardenCanvas.getContext('2d');
-    gardenCurrentPoint.x = gardenMouse.x;
-    gardenCurrentPoint.y = gardenMouse.y;
-    gardenStashPoint.x = 0;
-    gardenStashPoint.y = 0;
-
-    gardenContext.clearRect(0, 0, gardenCanvas.width, gardenCanvas.height);
-    gardenContext.save();
+    resetLSystemCanvas(gardenCanvas, gardenCurrentPoint, gardenStashPoint, gardenMouse)
     $('#garden-setup-btn').attr('disabled', false);
 }
 
@@ -384,57 +321,6 @@ function validateDynamicPlantIntegers() {
     parseInt(gardenCurrentPoint.x);
     parseInt(gardenCurrentPoint.y);
     parseInt(currentType.degrees);
-}
-
-/**
- * Helper method to generate a random branch size for trees, shoots etc
- * @param min
- * @param max
- * @returns {number}
- */
-function randomNumberBetweenRange(min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
-}
-
-/**
- * Generate semi-random assortment of F, + and -.
- */
-function generatePlantString(stringLength, branchStartIndex) {
-    let gardenRuleArray = [], tempLang = [];
-
-    for (let i = 0; i < stringLength; i++) {
-        let ruleInput, tempLangIndex;
-        if (i < branchStartIndex) {
-            ruleInput = "F";
-        } else if (gardenRuleArray[i - 1] !== "F" && gardenRuleArray[i - 2] !== "F") {
-            ruleInput = "F";
-        } else {
-            if (gardenRuleArray[i - 1] === "+" || gardenRuleArray[i - 2] === "+") {
-                tempLang = ["F, -"];
-            } else if (gardenRuleArray[i - 1] === "-" || gardenRuleArray[i - 2] === "-") {
-                tempLang = ["F, +"];
-            } else {
-                tempLang = gardenLanguage;
-            }
-            tempLangIndex = Math.floor(Math.random() * gardenLanguage.length);
-            ruleInput = tempLang[tempLangIndex]
-        }
-        gardenRuleArray.push(ruleInput)
-    }
-    return gardenRuleArray;
-}
-
-function isInRange(number, min, max) {
-    return number >= min && number <= max;
-
-}
-
-function getAllIndexes(arr, val) {
-    let indexes = [], i;
-    for (i = 0; i < arr.length; i++)
-        if (arr[i] === val)
-            indexes.push(i);
-    return indexes;
 }
 
 /**

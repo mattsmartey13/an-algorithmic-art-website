@@ -1,18 +1,10 @@
-const language = /^[F+\-\[\]]*$/;
-const regex = /^[a-bA-B]*$/
-
 let mouse = {x: 0, y: 0};
-let stashPoint = {x: 0, y: 0};
-let finalPoint = {x: 0, y: 0};
-let stashAngle = 0;
-let finalAngle = 0;
 let lSystemString = "";
-
 let fractal = {
     angle: 0,
     startAngle: 0,
     currentAngle: 0,
-    lineL: 0,
+    lineLength: 0,
     iterations: 1,
     multiplier: 1
 }
@@ -20,47 +12,49 @@ let fractal = {
 let currentPoint = {
     'x': mouse.x,
     'y': mouse.y,
+    'degrees': 0
 }
 
-function lSystemCanvasOnMouseOver() {
+let stashPoint = {
+    'x': 0, 
+    'y': 0, 
+    'degrees': 0
+};
+
+let finalPoint = {
+    'x': 0, 
+    'y': 0, 
+    'degrees': 0
+};
+
+function lSystemCanvasOnMouseOver(event) {
     const canvas = document.getElementById('experimentLSystemCanvas');
-    let rect = canvas.getBoundingClientRect();
-    $("#mouseFloatX").html("X: " + Math.round((event.clientX - rect.left) / (rect.right - rect.left) * canvas.width));
-    $("#mouseFloatY").html("Y: " + Math.round((event.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height));
+    const coordinates = canvasOnMouseOver(canvas, event);
+    $("#mouseFloatX").html("X: " + coordinates.x);
+    $("#mouseFloatY").html("Y: " + coordinates.y);
 }
 
 function lSystemCanvasOnClick(event) {
     const canvas = document.getElementById('experimentLSystemCanvas');
-    let rect = canvas.getBoundingClientRect();
-    mouse.x = Math.round((event.clientX - rect.left) / (rect.right - rect.left) * canvas.width);
-    mouse.y = Math.round((event.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height);
-    currentPoint.x = mouse.x;
-    currentPoint.y = mouse.y;
+    canvasOnMouseClick(canvas, event, currentPoint, mouse);
     $("#mouseX").html("X: " + mouse.x);
     $("#mouseY").html("Y: " + mouse.y);
 }
 
-function drawLine(startX, startY) {
+function drawLSystemLine(startX, startY, degrees, fractal) {
     const canvas = document.getElementById('experimentLSystemCanvas');
     const context = canvas.getContext('2d');
-    if (validateAngle(fractal.currentAngle)) {
-        const theta = degreeToRadian(fractal.currentAngle);
-        const endX = Math.round(startX + fractal.lineL * Math.cos(theta));
-        const endY = Math.round(startY + fractal.lineL * Math.sin(theta));
+    if (validateAngle(degrees)) {
+        const theta = degreeToRadian(degrees);
+        const endPoints = getEndpoints(startX, startY, fractal.lineLength, theta)
+        drawGenericLine(context, startX, startY, getRandomColour(), fractal.lineLength / 5, endPoints.endX, endPoints.endY);
 
-        context.strokeStyle = getRandomColour();
-        context.lineWidth = fractal.lineL / 5;
-        context.beginPath();
-        context.moveTo(startX, startY);
-        context.lineTo(endX, endY);
-        context.stroke();
-
-        currentPoint.x = endX;
-        currentPoint.y = endY;
+        currentPoint.x = endPoints.endX;
+        currentPoint.y = endPoints.endY;
     }
 }
 
-function iterateOverRule(canvas, rule) {
+function iterateOverRule(canvas, rule, currentPoint, stashPoint) {
     const rules = {
         A: $("#ruleA").val(),
         B: $("#ruleB").val()
@@ -68,44 +62,31 @@ function iterateOverRule(canvas, rule) {
 
     for (let char of rule) {
         if (char === "A") {
-            processRule(canvas, rules.A);
+            processRule(canvas, currentPoint, stashPoint, rules.A, fractal);
         } else if (char === "B") {
-            processRule(canvas, rules.B);
+            processRule(canvas, currentPoint, stashPoint, rules.B, fractal);
         }
     }
 }
 
-function processRule(canvas, rule) {
+function processRule(canvas, currentPoint, stashPoint, rule, fractal) {
     for (let character of rule) {
-        parseInt(fractal.currentAngle);
-        let temp = fractal.currentAngle
+        parseInt(currentPoint.degrees);
         switch (character) {
             case 'F':
-                drawLine(currentPoint.x, currentPoint.y);
+                drawLSystemLine(currentPoint.x, currentPoint.y, currentPoint.degrees, fractal);
                 break;
             case '+':
-                if (fractal.currentAngle + fractal.angle < 360) {
-                    fractal.currentAngle += fractal.angle
-                } else {
-                    fractal.currentAngle = ((temp - 360) + fractal.angle);
-                }
+                rotatePointDirection(true, fractal.angle, currentPoint);
                 break;
             case'-':
-                if (fractal.currentAngle - fractal.angle >= 0) {
-                    fractal.currentAngle -= fractal.angle;
-                } else {
-                    fractal.currentAngle = (temp - fractal.angle + 360);
-                }
+                rotatePointDirection(false, fractal.angle, currentPoint);
                 break;
             case '[':
-                stashPoint.x = currentPoint.x;
-                stashPoint.y = currentPoint.y;
-                stashAngle = fractal.currentAngle;
+                setPointFromPoint(stashPoint, currentPoint.x, currentPoint.y, currentPoint.degrees);
                 break;
             case ']':
-                currentPoint.x = stashPoint.x;
-                currentPoint.y = stashPoint.y;
-                fractal.currentAngle = stashAngle;
+                setPointFromPoint(currentPoint, stashPoint.x, stashPoint.y, stashPoint.degrees);
                 break;
         }
     }
@@ -122,30 +103,23 @@ function drawFractal() {
 
     fractal.angle = parseInt($("#angle").val());
     fractal.startAngle = parseInt($("#startAngle").val());
-    fractal.lineL = parseInt($("#lineLength").val());
+    fractal.lineLength = parseInt($("#lineLength").val());
     fractal.iterations = parseInt($("#iterations").val());
     fractal.multiplier = parseFloat($("#multiplier").val());
 
-    if (
-        testRegex(ruleABecomes, ruleBBecomes) &&
-        testRuleCharacters(ruleA, ruleB) &&
-        validateAngle(fractal.angle) &&
-        validateAngle(fractal.startAngle) &&
-        validateMultiplier(fractal.multiplier) &&
-        validateLineLength(fractal.lineL)
-    ) {
+    if (validateInputs(ruleABecomes, ruleBBecomes, ruleA, ruleB, fractal)) {
         if (currentPoint.x === mouse.x && currentPoint.y === mouse.y) {
-            fractal.currentAngle = fractal.startAngle;
+            currentPoint.degrees = fractal.startAngle;
         } else {
-            fractal.currentAngle = finalAngle;
+            currentPoint.degrees = finalPoint.degrees;
             currentPoint.x = finalPoint.x;
             currentPoint.y = finalPoint.y;
         }
-        lSystemGenerate(canvas, lSystemString, fractal.iterations);
+        lSystemGenerate(canvas, lSystemString, fractal);
 
         finalPoint.x = currentPoint.x;
         finalPoint.y = currentPoint.y;
-        finalAngle = fractal.currentAngle;
+        finalPoint.degrees = currentPoint.degrees;
     }
 }
 
@@ -156,9 +130,9 @@ function resetCanvas() {
     currentPoint.y = mouse.y;
     finalPoint.x = 0;
     finalPoint.y = 0;
-    finalAngle = 0;
-    fractal.currentAngle = 0
-    fractal.lineL = parseInt($("#lineLength").val());
+    finalPoint.degrees = 0;
+    currentPoint.degrees = 0
+    fractal.lineLength = parseInt($("#lineLength").val());
     lSystemString = "";
 
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -190,11 +164,11 @@ function lSystemCompute(string) {
     return newString;
 }
 
-function lSystemGenerate(canvas, string, iterations) {
-    for (let iter = 0; iter < iterations; iter++) {
+function lSystemGenerate(canvas, string, fractal) {
+    for (let iter = 0; iter < fractal.iterations; iter++) {
         string = lSystemCompute(string);
-        iterateOverRule(canvas, string);
-        fractal.lineL *= fractal.multiplier;
+        iterateOverRule(canvas, string, currentPoint, stashPoint);
+        fractal.lineLength *= fractal.multiplier;
     }
 }
 
@@ -240,37 +214,22 @@ function errorFinder() {
     }
 }
 
-function validateAngle(angle) {
-    return (angle < 360 && angle > 0) === true;
-}
-
-function degreeToRadian(degrees) {
-    return degrees * (Math.PI / 180);
-}
-
-function getRandomColour() {
-    return "#" + Math.floor(Math.random() * 16777215).toString(16);
-}
-
 function onInputChange() {
     let errorMessage = document.getElementById('l-systemerrormsg');
     errorMessage.innerHTML = "";
-}
-
-function testRegex(ruleString1, ruleString2) {
-    return regex.test(ruleString1) && regex.test(ruleString2) === true;
-}
-
-function testRuleCharacters(ruleChar1, ruleChar2) {
-    return language.test(ruleChar1) && language.test(ruleChar2) === true;
 }
 
 function validateMultiplier(multiplier) {
     return multiplier <= 2 && multiplier > 0;
 }
 
-function validateLineLength(lineLength) {
-    return lineLength > 0;
+function validateInputs(ruleABecomes, ruleBBecomes, ruleA, ruleB, fractal) {
+    return !!(testRegex(ruleABecomes, ruleBBecomes) &&
+        testRuleCharacters(ruleA, ruleB) &&
+        validateAngle(fractal.angle) &&
+        validateAngle(fractal.startAngle) &&
+        validateMultiplier(fractal.multiplier) &&
+        validateLineLength(fractal.lineLength) === true);
 }
 
 
