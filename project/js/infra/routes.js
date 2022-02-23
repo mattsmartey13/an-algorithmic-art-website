@@ -1,4 +1,4 @@
-let directory = 'frontend/static/html';
+let directory = 'project/html';
 
 /**
  * Define routes
@@ -25,12 +25,16 @@ const routes = [
         getView: (params) => loadHTML(concatenateUrl('artwork/lindenmayer.html'))
     },
     {
-        path: '/artwork-experimental-lindenmayer',
-        getView: (params) => loadHTML(concatenateUrl('artwork/experimentl-system.html'))
+        path: '/artwork-experiment-lsystem',
+        getView: (params) => loadHTML(concatenateUrl('artwork/experiment-lsystem.html'))
     },
     {
-        path: '/artwork-garden',
+        path: '/artwork-garden-lsystem',
         getView: (params) => loadHTML(concatenateUrl('artwork/garden-lsystem.html'))
+    },
+    {
+        path: '/artwork-mandala-lsystem',
+        getView: (params) => loadHTML(concatenateUrl('artwork/mandala-lsystem.html'))
     }
 ];
 

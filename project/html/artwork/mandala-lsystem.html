@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>L-System Mandala</title>
+</head>
+<body>
+<h1>L-System Mandala</h1>
+<section class="artpiece-description">
+    <p>
+        Using the L system language of this project, you can now construct a Mandala.
+        The mandala piece in the preface section utilised a different and more simple algorithm: the program would simply plot the number of specified points on the canvas using a set of trigonometry rules, and then draw a line from each point to the other points.
+        This piece however will utilise L systems that originate from the centre of the canvas and traverse in all 360 degrees, before being called recursively at the finishing point of each drawn L-system.
+    </p>
+</section>
+    <label for="lSystemMandalaColour1">Gradient colour 1</label>
+    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour1"/>
+    <label for="lSystemMandalaColour2">Gradient colour 2</label>
+    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour2">
+    <label for="lSystemMandalaLineLength">Line length</label>
+    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaLineLength">
+    <label for="lSystemMandalaLineWidth">Line width</label>
+    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaLineWidth">
+    <label for="lSystemMandalaIterations">Number of iterations 1-8</label>
+    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaIterations">
+    <button id="lSystemMandalaDraw">Draw</button>
+    <br>
+<br>
+    <p>
+        Mouse position
+        <label id="mandalaMouseX"></label>
+        <label id="mandalaMouseY"></label>
+    </p>
+    <br>
+    <p>
+        Mouse float
+        <label id="mandalaMouseFloatX"></label>
+        <label id="mandalaMouseFloatY"></label>
+    </p>
+    <canvas id="mandalaLSystemCanvas" width="1000" height="600" style="border:1px solid #000000"></canvas>
+</body>
+</html>
