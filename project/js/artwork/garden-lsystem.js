@@ -206,7 +206,7 @@ function interpretRule(gardenRuleArray, typeName, currentX, currentY, startAngle
 
                 if (typeName === "flower" && (branchEnd() || stemRange(2, 1))) {
                     gardenContext.fillStyle = returnRandomFlowerColour();
-                    drawLeaf(currentX.x, gcp.y, startAngle + ct.rotationAngle, Math.PI);
+                    drawLeaf(gcp.x, gcp.y, startAngle + ct.rotationAngle, Math.PI);
                     drawLeaf(currentX + 10, currentY + 10, lineLength * 2, startAngle - ct.rotationAngle, Math.PI / 2);
                     drawLeaf(currentX - 10, currentY - 10, lineLength * 2, startAngle + ct.rotationAngle, Math.PI / 2);
                     drawLeaf(currentX + 10, currentY - 10, lineLength * 2, startAngle - ct.rotationAngle, Math.PI / 2);
@@ -226,14 +226,14 @@ function interpretRule(gardenRuleArray, typeName, currentX, currentY, startAngle
                 rotatePointDirection(false, ct.rotationAngle, gardenCurrentPoint);
                 break;
             case '[':
-                setPointFromPoint(gardenStashPoint, currentX, currentY, startAngle);
+                setPointFromPoint(gsp, currentX, currentY, startAngle);
                 if (ct.minBranches > 0 && lineWidth > 1 && lineLength > 1) {
                     generateGardenComponent(typeName, currentX, currentY, startAngle - ct.rotationAngle, ct.branchLength * 0.8, lineLength * 0.8, lineWidth * 0.8);
                     generateGardenComponent(typeName, currentX, currentY, startAngle + ct.rotationAngle, ct.branchLength * 0.8, lineLength * 0.8, lineWidth * 0.8);
                 }
                 break;
             case ']':
-                setPointFromPoint(gardenCurrentPoint, gardenStashPoint.x, gardenStashPoint.y, gardenStashPoint.degrees);
+                setPointFromPoint(gcp, gsp.x, gsp.y, gsp.degrees);
                 break;
         }
     }

@@ -68,13 +68,13 @@ function generateFractalString(stringLength, branchStartIndex) {
             ruleInput = "F";
         } else {
             if (ruleArray[i - 1] === "+" || ruleArray[i - 2] === "+") {
-                tempLang = ["F, -"];
+                tempLang = ["F", "-"];
             } else if (ruleArray[i - 1] === "-" || ruleArray[i - 2] === "-") {
-                tempLang = ["F, +"];
+                tempLang = ["F", "+"];
             } else {
                 tempLang = lSystemLanguage;
             }
-            tempLangIndex = Math.floor(Math.random() * lSystemLanguage.length);
+            tempLangIndex = Math.floor(Math.random() * tempLang.length);
             ruleInput = tempLang[tempLangIndex]
         }
         ruleArray.push(ruleInput)
