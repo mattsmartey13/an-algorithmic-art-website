@@ -13,17 +13,31 @@
         This piece however will utilise L systems that originate from the centre of the canvas and traverse in all 360 degrees, before being called recursively at the finishing point of each drawn L-system.
     </p>
 </section>
+    <label for="lSystemMandalaLineColour">Line colour</label>
+    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaLineColour" onchange="changeLineColor(mandalaData)"/>
     <label for="lSystemMandalaColour1">Gradient colour 1</label>
-    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour1"/>
+    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour1" onchange="changeColourGradient1(mandalaData)"/>
     <label for="lSystemMandalaColour2">Gradient colour 2</label>
-    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour2">
+    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour2" onchange="changeColourGradient2(mandalaData)">
+    <button id="lSystemMandalaGradientBtn" onclick="setMandalaCanvasColourGradient(mandalaData)">Set gradient</button>
     <label for="lSystemMandalaLineLength">Line length</label>
-    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaLineLength">
+    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaLineLength" onchange="changeLineLength(mandalaData)">
     <label for="lSystemMandalaLineWidth">Line width</label>
-    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaLineWidth">
-    <label for="lSystemMandalaIterations">Number of iterations 1-8</label>
-    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaIterations">
-    <button id="lSystemMandalaDraw">Draw</button>
+    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaLineWidth" onchange="changeLineWidth(mandalaData)">
+    <label for="lSystemMandalaCircleRadius">Starting circle radius</label>
+    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaCircleRadius" onchange="changeCircleRadius(mandalaData)">
+    <label for="lSystemMandalaSpawns">Number of branches spawning from center circle</label>
+    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaSpawns" onchange="changeNumberSpawns(mandalaData)">
+    <label for="lSystemMandalaMainStringLength">String length on main branches</label>
+    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaMainStringLength" onchange="changeMainBranchLength(mandalaData)">
+    <label for="lSystemMandalaBranchLength">String length on side branches</label>
+    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaBranchLength" onchange="changeSideBranchLength(mandalaData)">
+    <label for="lSystemMandalaBranchNumber">Number of side branches off a main branch</label>
+    <input type="number" class="lSystemMandalaDimensions" id="lSystemMandalaBranchNumber" onchange="changeNumberSideBranches(mandalaData)">
+<!--    <label for="lSystemMandalaIterations">Number of iterations 1-8</label>-->
+<!--    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaIterations">-->
+    <button id="lSystemMandalaReset" onclick="resetMandalaCanvas()">Reset</button>
+    <button id="lSystemMandalaDraw" onclick="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">Draw</button>
     <br>
 <br>
     <p>
@@ -37,6 +51,6 @@
         <label id="mandalaMouseFloatX"></label>
         <label id="mandalaMouseFloatY"></label>
     </p>
-    <canvas id="mandalaLSystemCanvas" width="1000" height="600" style="border:1px solid #000000"></canvas>
+    <canvas id="mandalaLSystemCanvas" width="1000" height="600" style="border:1px solid #000000" onmousemove="mandalaCanvasOnMouseOver(event)" onclick="mandalaCanvasOnClick(event)"></canvas>
 </body>
 </html>
