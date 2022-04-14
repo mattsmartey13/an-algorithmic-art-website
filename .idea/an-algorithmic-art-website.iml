@@ -11,5 +11,6 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="jcanvas" level="application" />
     <orderEntry type="library" name="jquery-ui" level="application" />
+    <orderEntry type="library" name="lodash.js" level="application" />
   </component>
 </module>

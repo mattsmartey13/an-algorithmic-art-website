@@ -10,55 +10,27 @@ const mandalaStashPoint = {
     'degrees': 0
 }
 
-const mandalaMouse = {
-    'x': 0,
-    'y': 0
-};
+let endCoordinates = [];
 
 const mandalaData = {
     'rotationAngle': 15,
-    'lineLength': 10,
+    'lineLength': 1,
     'lineWidth': 1,
-    'circleRadius': 30,
-    'spawns': 10,
-    'mainStringLength': 20,
-    'branchNumber': 8,
-    'branchLength': 10,
+    'circleRadius': 1,
+    'spawns': 1,
+    'mainStringLength': 1,
+    'branchNumber': 1,
+    'branchLength': 1,
     'kinkStartIndex': 2,
-    'kinkEndIndex': 18,
-    'lineColor': "#ffffff",
+    'kinkEndIndex': 4,
+    'lineColor': "#000000",
     'gradientColour1': "#801171",
     'gradientColour2': "#f1ff36",
-    'iterations': 1
-}
-
-let startCoordinates = [];
-let endCoordinates = [];
-
-/**
- * On canvas scroll custom event handler
- */
-function mandalaCanvasOnMouseOver(event) {
-    const mandalaCanvas = document.getElementById('mandalaLSystemCanvas');
-    const coordinates = canvasOnMouseOver(mandalaCanvas, event)
-    $("#mandalaMouseFloatX").html("X: " + coordinates.x);
-    $("#mandalaMouseFloatY").html("Y: " + coordinates.y);
-}
-
-/**
- * Onclick custom event handler
- * @param event
- */
-function mandalaCanvasOnClick(event) {
-    const mandalaCanvas = document.getElementById('mandalaLSystemCanvas');
-    canvasOnMouseClick(mandalaCanvas, event, mandalaCurrentPoint, mandalaMouse);
-    $("#mandalaMouseX").html("X: " + mandalaMouse.x);
-    $("#mandalaMouseY").html("Y: " + mandalaMouse.y);
 }
 
 function resetMandalaCanvas() {
     const mandalaCanvas = document.getElementById('mandalaLSystemCanvas');
-    resetLSystemCanvas(mandalaCanvas, mandalaCurrentPoint, mandalaStashPoint, mandalaMouse);
+    resetLSystemCanvas(mandalaCanvas, mandalaCurrentPoint, mandalaStashPoint);
 }
 
 function validateMandalaIntInputs() {
@@ -74,7 +46,40 @@ function validateMandalaIntInputs() {
 function drawLSystemMandala(mcp, msp, md) {
     const mandalaCanvas = document.getElementById('mandalaLSystemCanvas');
     const mandalaContext = mandalaCanvas.getContext("2d");
-    drawMandalaCircleLayer(mandalaContext, mcp, msp, md)
+    const rect = mandalaCanvas.getBoundingClientRect();
+
+    mcp.x = rect.width / 2;
+    mcp.y = rect.height / 2;
+
+    validateMandalaIntInputs(mcp, msp, md);
+    mandalaOnInputs(md);
+
+    const circleCenter = createCircleCenter(mandalaContext, mcp, md);
+    const angleGap = () => 360 / md.spawns;
+    const xCoordinates = setCircleXCoordinates(circleCenter.x, md.circleRadius, md.spawns);
+    const yCoordinates = setCircleYCoordinates(circleCenter.y, md.circleRadius, md.spawns);
+
+    const coordinates = () => {
+        const coords = [];
+        for (let i = 0; i < md.spawns; i++) {
+            coords.push(Array(xCoordinates[i], yCoordinates[i]));
+        }
+        return coords;
+    }
+
+    for (let i = 0; i < coordinates().length; i++) {
+        const spawn = generateMandalaString(md.mainStringLength, md.kinkStartIndex, md.kinkEndIndex, md.branchNumber);
+        mcp.degrees = i * angleGap();
+        mcp.x = coordinates()[i][0];
+        mcp.y = coordinates()[i][1];
+        processMandalaString(mandalaContext, spawn, mcp, msp, md);
+    }
+
+    drawLayerEdge(mandalaContext, md, endCoordinates);
+
+    for (let i = 0; i < md.mainStringLength; i++) {
+        endCoordinates.shift();
+    }
 }
 
 function drawMandalaLine(context, mcp, md) {
@@ -100,23 +105,29 @@ function processMandalaString(context, string, mcp, msp, md) {
                 break;
             case "[+]":
                 setPointFromPoint(msp, mcp.x, mcp.y, mcp.degrees);
-                branch = generateFractalString(Math.floor(string.length / 3), (Math.floor(string.length / 6)))
+                branch = generateFractalString(Math.floor(md.branchLength), (Math.floor(2)))
                 rotatePointDirection(true, md.rotationAngle, mcp)
                 processMandalaString(context, branch, mcp, msp, md)
                 setPointFromPoint(mcp, msp.x, msp.y, msp.degrees);
                 break;
             case "[-]":
                 setPointFromPoint(msp, mcp.x, mcp.y, mcp.degrees);
-                branch = generateFractalString(Math.floor(string.length / 3), (Math.floor(string.length / 6)))
+                branch = generateFractalString(Math.floor(md.branchLength), 2)
                 rotatePointDirection(false, md.rotationAngle, mcp)
                 processMandalaString(context, branch, mcp, msp, md)
                 setPointFromPoint(mcp, msp.x, msp.y, msp.degrees);
                 break;
+            case "[":
+                setPointFromPoint(msp, mcp.x, mcp.y, mcp.degrees);
+                break;
             case "]":
+                setPointFromPoint(mcp, msp.x, msp.y, msp.degrees);
                 break;
         }
     }
-    endCoordinates.push([mcp.x, mcp.y]);
+
+    if (string.includes("[+]") || string.includes("[-]"))
+        endCoordinates.push([mcp.x, mcp.y]);
 }
 
 /**
@@ -130,30 +141,36 @@ function processMandalaString(context, string, mcp, msp, md) {
 function generateMandalaString(mainStringLength, startIndex, endIndex, numberBranches) {
     let ruleArray = [];
 
-    const insertBranchPair = (index) => {
-        ruleArray.splice(
-            index,
-            0,
-            "[+]", "[-]"
-        )
-    }
+    if (numberBranches > 0) {
+        const insertBranchPair = (index) => {
+            const rand = Math.ceil(Math.random() * 3);
+            switch (rand) {
+                case 1:
+                    ruleArray.splice(index, 0, "[-]")
+                    break;
+                case 2:
+                    ruleArray.splice(index, 0, "[+]")
+                    break;
+                case 3:
+                    ruleArray.splice(index, 0, "[+]", "[-]")
+            }
+        }
+        for (let i = 0; i < mainStringLength; i++) {
+            ruleArray.push(lSystemLanguage[0]);
+        }
 
-    for (let i = 0; i < mainStringLength; i++) {
-        ruleArray.push(lSystemLanguage[0]);
+        const branchIndexes = setRandomBranchIndexes(startIndex, endIndex, numberBranches);
+        branchIndexes.map(insertBranchPair)
+    } else {
+        for (let i = 0; i < mainStringLength; i++) {
+            ruleArray.push(lSystemLanguage[0]);
+        }
     }
-
-    const branchIndexes = setRandomBranchIndexes(startIndex, endIndex, numberBranches);
-    branchIndexes.map(insertBranchPair)
 
     return ruleArray;
 }
 
-/**
- * Secondary structure, mandala layer
- * Branches extending off circle
- */
-function drawMandalaCircleLayer(context, mcp, msp, md) {
-    validateMandalaIntInputs(mcp, msp, md);
+function createCircleCenter(context, mcp, md) {
     const circleCenter =
         {x: mcp.x, y: mcp.y}
 
@@ -163,24 +180,16 @@ function drawMandalaCircleLayer(context, mcp, msp, md) {
     context.strokeStyle = md.lineColor;
     context.stroke();
 
-    const angleGap = () => 360 / md.spawns;
-    const xCoordinates = setCircleXCoordinates(circleCenter.x, md.circleRadius, md.spawns);
-    const yCoordinates = setCircleYCoordinates(circleCenter.y, md.circleRadius, md.spawns);
+    return circleCenter;
+}
 
-    const coordinates = () => {
-        const coords = [];
-        for (let i = 0; i < md.spawns; i++) {
-            coords.push(Array(xCoordinates[i], yCoordinates[i]));
+function drawLayerEdge(context, md, endPoints) {
+    for (let i = 0; i < endPoints.length; i++) {
+        if (i !== endPoints.length - 1) {
+            drawGenericLine(context, endPoints[i][0], endPoints[i][1], md.lineColor, md.lineWidth, endPoints[i + 1][0], endPoints[i + 1][1]);
+        } else {
+            drawGenericLine(context, endPoints[i][0], endPoints[i][1], md.lineColor, md.lineWidth, endPoints[0][0], endPoints[0][1]);
         }
-        return coords;
-    }
-
-    for (let i = 0; i < coordinates().length; i++) {
-        const spawn = generateMandalaString(md.mainStringLength, md.kinkStartIndex, md.kinkEndIndex, md.branchNumber);
-        mcp.degrees = i * angleGap();
-        mcp.x = coordinates()[i][0];
-        mcp.y = coordinates()[i][1];
-        processMandalaString(context, spawn, mcp, msp, md);
     }
 }
 
@@ -223,6 +232,19 @@ function setMandalaCanvasColourGradient(md) {
     grd.addColorStop(1, md.gradientColour2);
     context.fillStyle = grd;
     context.fillRect(0, 0, canvasRect.width, canvasRect.height);
+}
+
+function mandalaOnInputs(md) {
+    changeColourGradient1(md);
+    changeColourGradient2(md);
+    changeCircleRadius(md);
+    changeLineColor(md);
+    changeLineLength(md);
+    changeLineWidth(md);
+    changeNumberSpawns(md);
+    changeNumberSideBranches(md);
+    changeSideBranchLength(md);
+    changeMainBranchLength(md);
 }
 
 /**
@@ -268,7 +290,7 @@ function changeLineWidth(md) {
  * @param md
  */
 function changeCircleRadius(md) {
-    md.circleRadius = parseInt(document.getElementById("lSystemMandalaCircleRadius").value);
+    md.circleRadius = parseInt(document.getElementById('lSystemMandalaCircleRadius').value);
 }
 
 /**
@@ -286,7 +308,7 @@ function changeNumberSpawns(md) {
 function changeMainBranchLength(md) {
     md.mainStringLength = parseInt(document.getElementById('lSystemMandalaMainStringLength').value);
     md.kinkStartIndex = 2;
-    md.kinkEndIndex = md.mainStringLength - 2;
+    md.kinkEndIndex = md.mainStringLength - md.branchLength;
 }
 
 /**

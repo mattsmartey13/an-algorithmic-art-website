@@ -16,6 +16,13 @@ function drawGenericLine(context, startX, startY, colour, lineWidth, endX, endY)
     context.stroke();
 }
 
+function drawCircle(context, x, y, length, radius, angle, rotation) {
+    context.beginPath();
+    context.arc(x, y, length, radius, angle, rotation);
+    context.fill();
+    context.closePath();
+}
+
 /**
  * Helper method for branching
  * @param min
@@ -49,8 +56,16 @@ function setPointFromPoint(point, x, y, degrees) {
  */
 function resetLSystemCanvas(canvas, currentPoint, stashPoint, mouse) {
     const context = canvas.getContext('2d');
-    currentPoint.x = mouse.x;
-    currentPoint.y = mouse.y;
+    const rect = canvas.getBoundingClientRect();
+
+    if (mouse !== undefined) {
+        currentPoint.x = mouse.x;
+        currentPoint.y = mouse.y;
+    } else {
+        currentPoint.x = rect.width / 2
+        currentPoint.y = rect.height / 2
+    }
+
     stashPoint.x = 0;
     stashPoint.y = 0;
     context.clearRect(0, 0, canvas.width, canvas.height);
