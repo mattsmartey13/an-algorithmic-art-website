@@ -198,19 +198,19 @@ function interpretRule(gardenRuleArray, typeName, currentX, currentY, startAngle
                 }
                 drawGardenLine(currentX, currentY, startAngle, lineLength, lineWidth);
                 if (typeName === "tree" && (branchEnd() || stemRange(4, 1))) {
-                    drawLeaf(currentX + 10, currentY, lineLength * 1.5, startAngle + ct.rotationAngle, Math.PI / 2);
-                    drawLeaf(currentX - 10, currentY, lineLength * 1.5, startAngle - ct.rotationAngle, Math.PI / 2);
-                    drawLeaf(currentX, currentY + 10, lineLength * 1.5, startAngle + ct.rotationAngle, Math.PI / 2);
-                    drawLeaf(currentX, currentY - 10, lineLength * 1.5, startAngle - ct.rotationAngle, Math.PI / 2);
+                    drawLeaf(currentX + 10, currentY, lineLength * 1.5, startAngle + ct.rotationAngle, Math.PI / 2, ct);
+                    drawLeaf(currentX - 10, currentY, lineLength * 1.5, startAngle - ct.rotationAngle, Math.PI / 2, ct);
+                    drawLeaf(currentX, currentY + 10, lineLength * 1.5, startAngle + ct.rotationAngle, Math.PI / 2, ct);
+                    drawLeaf(currentX, currentY - 10, lineLength * 1.5, startAngle - ct.rotationAngle, Math.PI / 2, ct);
                 }
 
                 if (typeName === "flower" && (branchEnd() || stemRange(2, 1))) {
                     gardenContext.fillStyle = returnRandomFlowerColour();
                     drawLeaf(gcp.x, gcp.y, startAngle + ct.rotationAngle, Math.PI);
-                    drawLeaf(currentX + 10, currentY + 10, lineLength * 2, startAngle - ct.rotationAngle, Math.PI / 2);
-                    drawLeaf(currentX - 10, currentY - 10, lineLength * 2, startAngle + ct.rotationAngle, Math.PI / 2);
-                    drawLeaf(currentX + 10, currentY - 10, lineLength * 2, startAngle - ct.rotationAngle, Math.PI / 2);
-                    drawLeaf(currentX - 10, currentY + 10, lineLength * 2, startAngle + ct.rotationAngle, Math.PI / 2);
+                    drawLeaf(currentX + 10, currentY + 10, lineLength * 2, startAngle - ct.rotationAngle, Math.PI / 2, ct);
+                    drawLeaf(currentX - 10, currentY - 10, lineLength * 2, startAngle + ct.rotationAngle, Math.PI / 2, ct);
+                    drawLeaf(currentX + 10, currentY - 10, lineLength * 2, startAngle - ct.rotationAngle, Math.PI / 2, ct);
+                    drawLeaf(currentX - 10, currentY + 10, lineLength * 2, startAngle + ct.rotationAngle, Math.PI / 2, ct);
                 }
 
                 currentX = gcp.x;
@@ -284,15 +284,11 @@ function drawGardenLine(startX, startY, degrees, lineLength, lineWidth) {
  * @param angle
  * @param rot
  */
-function drawLeaf(x, y, length, angle, rot) {
+function drawLeaf(x, y, length, angle, rot, ct) {
     const gardenCanvas = document.getElementById('garden-canvas');
     const gardenContext = gardenCanvas.getContext('2d');
-    const ct = currentType;
 
-    gardenContext.beginPath();
-    gardenContext.arc(x, y, ct.length, length, angle, rot);
-    gardenContext.fill();
-    gardenContext.closePath();
+    drawCircle(gardenContext, x, y, ct.length, length, angle, rot)
 }
 
 /**
