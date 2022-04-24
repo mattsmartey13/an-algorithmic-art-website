@@ -5,6 +5,16 @@ const lSystemLanguageWithBrackets = ['F', '+', '-', '[', ']'];
 Object.freeze(lSystemLanguage);
 Object.freeze(lSystemLanguageWithBrackets);
 
+/**
+ * Draw line, params included
+ * @param context
+ * @param startX
+ * @param startY
+ * @param colour
+ * @param lineWidth
+ * @param endX
+ * @param endY
+ */
 function drawGenericLine(context, startX, startY, colour, lineWidth, endX, endY) {
     context.save();
     context.beginPath();
@@ -16,6 +26,36 @@ function drawGenericLine(context, startX, startY, colour, lineWidth, endX, endY)
     context.stroke();
 }
 
+/**
+ * Draw bezier curve, with params included
+ * @param context
+ * @param colour
+ * @param width
+ * @param start
+ * @param end
+ * @param bezierStartPoint
+ * @param bezierEndPoint
+ */
+function drawGenericBezierCurve(context, colour, width, start, end, bezierStartPoint, bezierEndPoint) {
+    context.save();
+    context.beginPath();
+    context.strokeStyle = colour;
+    context.lineWidth = width;
+    context.moveTo(start.x, start.y);
+    context.bezierCurveTo(bezierStartPoint.x, bezierStartPoint.y, bezierEndPoint.x, bezierEndPoint.y, end.x, end.y)
+    context.stroke();
+}
+
+/**
+ *
+ * @param context
+ * @param x
+ * @param y
+ * @param length
+ * @param radius
+ * @param angle
+ * @param rotation
+ */
 function drawCircle(context, x, y, length, radius, angle, rotation) {
     context.beginPath();
     context.arc(x, y, length, radius, angle, rotation);
@@ -31,6 +71,30 @@ function drawCircle(context, x, y, length, radius, angle, rotation) {
  */
 function randomNumberBetweenRange(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
+}
+
+function getMidwayCoordinate(start, end) {
+    const x = start.x + (end.x - start.x) * 0.50;
+    const y = start.y + (end.y - start.y) * 0.50;
+
+    return { x, y };
+}
+
+/**
+ * Helper method to split array into Array with nested arrays of length N
+ * @param n
+ * @param data
+ * @returns {*[]}
+ */
+function groupArrayInSetsOfN(n, data)  {
+    let result = [];
+    for (let i = 0; i < data.length; i += n)
+        result.push(data.slice(i, i + n));
+
+    if (result[result.length - 1].length !== n)
+        result.pop();
+
+    return result;
 }
 
 function isInRange(number, min, max) {
@@ -66,8 +130,11 @@ function resetLSystemCanvas(canvas, currentPoint, stashPoint, mouse) {
         currentPoint.y = rect.height / 2
     }
 
-    stashPoint.x = 0;
-    stashPoint.y = 0;
+    if (stashPoint !== undefined) {
+        stashPoint.x = 0;
+        stashPoint.y = 0;
+    }
+
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.save();
 }
@@ -163,9 +230,9 @@ function rotatePointDirection(b, angle, currentPointVar) {
 }
 
 function getEndpoints(startX, startY, lineLength, theta) {
-    const endX = Math.round(startX + lineLength * Math.cos(theta));
-    const endY = Math.round(startY + lineLength * Math.sin(theta));
+    const x = Math.round(startX + lineLength * Math.cos(theta));
+    const y = Math.round(startY + lineLength * Math.sin(theta));
 
-    return { endX, endY };
+    return { x, y };
 }
 
