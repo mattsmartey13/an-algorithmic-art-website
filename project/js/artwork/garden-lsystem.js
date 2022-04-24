@@ -206,7 +206,7 @@ function interpretRule(gardenRuleArray, typeName, currentX, currentY, startAngle
 
                 if (typeName === "flower" && (branchEnd() || stemRange(2, 1))) {
                     gardenContext.fillStyle = returnRandomFlowerColour();
-                    drawLeaf(gcp.x, gcp.y, startAngle + ct.rotationAngle, Math.PI);
+                    drawLeaf(gcp.x, gcp.y, lineLength * 4, startAngle + ct.rotationAngle, Math.PI / 2, ct);
                     drawLeaf(currentX + 10, currentY + 10, lineLength * 2, startAngle - ct.rotationAngle, Math.PI / 2, ct);
                     drawLeaf(currentX - 10, currentY - 10, lineLength * 2, startAngle + ct.rotationAngle, Math.PI / 2, ct);
                     drawLeaf(currentX + 10, currentY - 10, lineLength * 2, startAngle - ct.rotationAngle, Math.PI / 2, ct);
@@ -283,6 +283,7 @@ function drawGardenLine(startX, startY, degrees, lineLength, lineWidth) {
  * @param length
  * @param angle
  * @param rot
+ * @param ct
  */
 function drawLeaf(x, y, length, angle, rot, ct) {
     const gardenCanvas = document.getElementById('garden-canvas');

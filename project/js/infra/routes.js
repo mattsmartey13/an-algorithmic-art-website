@@ -35,6 +35,10 @@ const routes = [
     {
         path: '/artwork-mandala-lsystem',
         getView: (params) => loadHTML(concatenateUrl('artwork/mandala-lsystem.html'))
+    },
+    {
+        path: '/artwork-dna-lsystem',
+        getView: (params) => loadHTML(concatenateUrl('artwork/dna-lsystem.html'))
     }
 ];
 

@@ -47,10 +47,10 @@ function drawLSystemLine(startX, startY, degrees, fractal) {
     if (validateAngle(degrees)) {
         const theta = degreeToRadian(degrees);
         const endPoints = getEndpoints(startX, startY, fractal.lineLength, theta)
-        drawGenericLine(context, startX, startY, getRandomColour(), fractal.lineLength / 5, endPoints.endX, endPoints.endY);
+        drawGenericLine(context, startX, startY, getRandomColour(), fractal.lineLength / 5, endPoints.x, endPoints.y);
 
-        currentPoint.x = endPoints.endX;
-        currentPoint.y = endPoints.endY;
+        currentPoint.x = endPoints.x;
+        currentPoint.y = endPoints.y;
     }
 }
 

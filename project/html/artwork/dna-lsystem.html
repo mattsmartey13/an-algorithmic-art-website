@@ -1,0 +1,70 @@
+<body>
+<h1>L-System DNA double helix</h1>
+<section class="artpiece-description">
+    <p>
+        The work Aristid Lindenmayer conducted on plant biology inspired me further. Following the creation of the
+        L-system garden, I found evidence of the existence of L-systems in the construction of proteins and DNA from
+        nucleotides.
+        The user is prompted with fewer inputs, however the artwork has a more "show your working" feel to demonstrate
+        the existence of the L-system.
+        This has a similar mechanism to the Custom Fractal Builder, however each nucleotide base will only call two
+        others.
+    </p>
+</section>
+<div id="lSystemDNAInputs">
+    <div id="lSystemDNABaseGrid">
+        <label for="lSystemDNAAdenine">Adenine base colour</label>
+        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAAdenine" value="#007fff"/>
+        <label for="lSystemDNAThymine">Thymine base colour</label>
+        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAThymine" value="#F7CC43">
+        <label for="lSystemDNAGuanine">Guanine base colour</label>
+        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAGuanine" value="#00ff00"/>
+        <label for="lSystemDNACytosine">Cytosine base colour</label>
+        <input type="color" class="lSystemDNABaseColours" id="lSystemDNACytosine" value="#ff0040"/>
+    </div>
+    <div id="lSystemDNARecursionGrid">
+        <p>
+            In terms of ATGC, which bases are called following a base being added into the helix?
+            Start with an axiom using a single nucleotide base, the iteration system will concatenate a single DNA strand based on the iteration system.
+            A second strand will then be constructed based on the matching nucleotide.
+            For best results, input 2-4 bases.
+        </p>
+        <label for="lSystemDNAAxiom">Axiom</label>
+        <input type="text" id="lSystemDNAAxiom" value="A">
+        <label for="lSystemDNAAdenineRec">A =</label>
+        <input type="text" id="lSystemDNAAdenineRec" value="GAC">
+        <label for="lSystemDNAGuanineRec">G = </label>
+        <input type="text" id="lSystemDNAGuanineRec" value="TAA">
+        <label for="lSystemDNAThymineRec">T = </label>
+        <input type="text" id="lSystemDNAThymineRec" value="CCG">
+        <label for="lSystemDNACytosineRec">C = </label>
+        <input type="text" id="lSystemDNACytosineRec" value="TCA">
+    </div>
+    <div>
+        <label for="lSystemDNABasePairs">Number of base pairs per section</label>
+        <input type="number" id="lSystemDNABasePairs" value="3">
+        <label for="lSystemDNAHelixDistance">Helix backbones distance</label>
+        <input type="number" id="lSystemDNAHelixDistance" value="20">
+        <label for="lSystemDNAHelixLength">Helix backbone length</label>
+        <input type="number" id="lSystemDNAHelixLength" value="40">
+        <label for="lSystemDNAIterations">Number of iterations 1-4</label>
+        <input type="range" id="lSystemDNAIterations" min="1" max="4" value="2">
+        <button id="lSystemDNADraw" onclick="drawDoubleHelix()">Draw DNA</button>
+        <button id="lSystemDNAReset" onclick="resetDnaCanvas()">Reset canvas</button>
+    </div>
+    <div>
+        <p>
+            Mouse position
+            <label id="lSystemDNAMouseX"></label>
+            <label id="lSystemDNAMouseY"></label>
+        </p>
+        <br>
+        <p>
+            Mouse float
+            <label id="lSystemDNAMouseFloatX"></label>
+            <label id="lSystemDNAMouseFloatY"></label>
+        </p>
+    </div>
+</div>
+<canvas id="lSystemDNACanvas" onclick="dnaCanvasOnMouseClick(event)" onmousemove="dnaCanvasOnMouseOver(event)" width="1000" height="600" style="border:1px solid #000000"></canvas>
+</body>
