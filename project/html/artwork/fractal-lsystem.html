@@ -65,61 +65,54 @@
 </ul>
 <hr>
 <label for="ruleA">A = Primary rule in terms of F, +, -, [, ] </label>
-<input id="ruleA" name="ruleA" value="F[++FF-F]--FF" type="text" onchange="onInputChange()"/>
+<input id="ruleA" name="ruleA" value="F[++FF-F]--FF" type="text"/>
 <br>
 <label for="ruleB">B = Secondary rule in terms of F, +, -, [, ] </label>
-<input id="ruleB" name="ruleB" value="FFF--F[F--FF+F]+FF" type="text" onchange="onInputChange()"/>
+<input id="ruleB" name="ruleB" value="FFF--F[F--FF+F]+FF" type="text"/>
 <br>
 <label for="ruleABecomes">Rule A is followed by:</label>
-<input id="ruleABecomes" name="drawRuleBox" value="ABABB" type="text" onchange="onInputChange()"/>
+<input id="ruleABecomes" name="drawRuleBox" value="ABABB" type="text"/>
 <br>
 <label for="ruleBBecomes">Rule B is followed by: </label>
-<input id="ruleBBecomes" name="drawRuleBox" value="BBABA" type="text" onchange="onInputChange()"/>
+<input id="ruleBBecomes" name="drawRuleBox" value="BBABA" type="text"/>
 <br>
 <br>
 <label for="lineLength">Line length: </label>
-<input id="lineLength" name="lineLength" value="20" type="number" onchange="onInputChange()"/>
+<input id="lineLength" name="lineLength" value="20" type="number" min="1"/>
 <br>
 <label for="angle">Rotation angle: </label>
-<input id="angle" name="angle" value="60" min="0" max="359" type="number" onchange="onInputChange()"/>
+<input id="angle" name="angle" value="60" min="0" max="359" type="number"/>
 <br>
 <label for="startAngle">Starting angle: </label>
-<input id="startAngle" name="startAngle" value="60" min="0" max="359" type="number" onchange="onInputChange()"/>
+<input id="startAngle" name="startAngle" value="60" min="0" max="359" type="number"/>
 <br>
 <br>
 Initial rule (axiom)
 <br>
 <label for="ruleARadio">Rule A</label>
-<input id="ruleARadio" name="ruleRadioGroup" type="radio" onchange="onInputChange()"/>
+<input id="ruleARadio" class="ruleRadioGroup" value="A" type="radio"/>
 <label for="ruleBRadio">Rule B</label>
-<input id="ruleBRadio" name="ruleRadioGroup" type="radio" onchange="onInputChange()"/>
+<input id="ruleBRadio" class="ruleRadioGroup" value="B" type="radio"/>
 <br>
 <br>
 <label for="iterations">Number of iterations</label>
-<input id="iterations" type="range" name="iterations" min="1" max="8" value="1" onchange=""/>
+<input id="iterations" type="range" name="iterations" min="1" max="8" value="1"/>
 <br>
 <label for="multiplier">Multiplier: </label>
-<input id="multiplier" name="multiplier" value="1" min="0.1" max="2" type="number" onchange="onInputChange()"/>
-<button id="drawFractalBtn" name="drawFractalBtn" onmousedown="errorFinder(); drawFractal(currentPoint, fractal)">Draw fractal</button>
-<button id="resetFractalBtn" name="resetFractalBtn" onmousedown="resetCanvas()">Reset canvas</button>
+<input id="multiplier" name="multiplier" value="1" min="0.1" max="2" type="number"/>
+<button id="drawFractalBtn" name="drawFractalBtn" onmousedown="drawFractal()">Draw fractal</button>
+<button id="resetFractalBtn" name="resetFractalBtn" onmousedown="resetFractalCanvas()">Reset canvas</button>
 <br>
 <br>
 Mouse position
-<br>
-<label id="mouseX"></label>
-<label id="mouseY"></label>
-<br>
+<p id="fractalMouse"></p>
 Mouse float
-<br>
-<label id="mouseFloatX"></label>
-<label id="mouseFloatY"></label>
-<br>
-<p id="l-systemerrormsg"></p>
-<canvas id='experimentLSystemCanvas'
+<p id="fractalMouseFloat"></p>
+<canvas id='fractalLSystemCanvas'
         width="1200" height="600"
         style="border:1px solid #000000"
-        onmousemove="lSystemCanvasOnMouseOver(event)"
-        onmousedown="lSystemCanvasOnClick(event)">
+        onmousemove="fractalCanvasOnMouseOver(event)"
+        onmousedown="fractalCanvasOnClick(event)">
 </canvas>
 </body>
 </html>

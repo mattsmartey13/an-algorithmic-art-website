@@ -13,13 +13,13 @@
         Each tree, flower and blade of grass will be different yet exhibit self-similarity.
     </p>
 </section>
-<button id="garden-setup-btn" name="garden-setup-btn" onmousedown="gardenSetup()">Setup soil and grass layers</button>
-<button id="type-tree" name="garden-type-btn" onclick="setPlantProperties('tree')">Set type to tree</button>
-<button id="type-shoot" name="garden-type-btn" onclick="setPlantProperties('grass')">Set type to grass</button>
-<button id="type-flower" name="garden-type-btn" onclick="setPlantProperties('shoot')">Set type to shoot</button>
-<button id="type-cloud" name="garden-type-btn" onclick="setPlantProperties('cloud')">Set type to cloud</button>
-<button id="type-grass" name="garden-type-btn" onclick="setPlantProperties('flower')">Set type to flower</button>
-<button id="garden-clear-canvas-btn" name="garden-clear-canvas-btn" onclick="resetGardenCanvas()">Clear canvas</button>
+<button id="gardenSetupButton" name="gardenSetupButton" onmousedown="gardenSetup()">Setup soil and grass layers</button>
+<button id="typeTree" name="gardenTypeButton" onclick="setPlantProperties(names.tree)">Set type to tree</button>
+<button id="typeShoot" name="gardenTypeButton" onclick="setPlantProperties(names.shoot)">Set type to shoot</button>
+<button id="typeFlower" name="gardenTypeButton" onclick="setPlantProperties(names.flower)">Set type to flower</button>
+<button id="typeCloud" name="gardenTypeButton" onclick="setPlantProperties(names.cloud)">Set type to cloud</button>
+<button id="typeGrass" name="gardenTypeButton" onclick="setPlantProperties(names.grass)">Set type to grass</button>
+<button id="gardenClearCanvasButton" name="gardenClearCanvasButton" onclick="resetGardenCanvas()">Clear canvas</button>
 <br>
 <p>
     Mouse position
@@ -33,8 +33,8 @@
     <label id="gardenMouseFloatY"></label>
 </p>
 <h4>Current type is:</h4>
-<p id="garden-type-output"></p>
-<canvas id="garden-canvas"
+<p id="gardenTypeOutput"></p>
+<canvas id="gardenCanvas"
             width="1200"
             height="600"
             style="border:1px solid #000000"

@@ -25,8 +25,8 @@ const routes = [
         getView: (params) => loadHTML(concatenateUrl('artwork/lindenmayer.html'))
     },
     {
-        path: '/artwork-experiment-lsystem',
-        getView: (params) => loadHTML(concatenateUrl('artwork/experiment-lsystem.html'))
+        path: '/artwork-fractal-lsystem',
+        getView: (params) => loadHTML(concatenateUrl('artwork/fractal-lsystem.html'))
     },
     {
         path: '/artwork-garden-lsystem',

@@ -1,9 +1,11 @@
 const lsystemLanguageRegex = /^[F+\-\[\]]*$/;
 const regexAB = /^[a-bA-B]*$/
+const regexDNA = /^[CAGTcagt]+$/
 const lSystemLanguage = ['F', '+', '-'];
 const lSystemLanguageWithBrackets = ['F', '+', '-', '[', ']'];
 Object.freeze(lSystemLanguage);
 Object.freeze(lSystemLanguageWithBrackets);
+
 /**
  * Helper method for branching
  * @param min
@@ -15,7 +17,7 @@ function randomNumberBetweenRange(min, max) {
 }
 
 /**
- * Helper method to split array into Array with nested arrays of length N
+ * Helper method to split array into array with nested arrays of length N
  * @param n
  * @param data
  * @returns {*[]}
@@ -31,10 +33,6 @@ function groupArrayInSetsOfN(n, data)  {
     return result;
 }
 
-function isInRange(number, min, max) {
-    return number >= min && number <= max;
-}
-
 function getAllIndexes(arr, val) {
     let indexes = [], i;
     for (i = 0; i < arr.length; i++)
@@ -44,7 +42,8 @@ function getAllIndexes(arr, val) {
 }
 
 function generateFractalString(stringLength, branchStartIndex) {
-    let ruleArray = [], tempLang = [];
+    const ruleArray = [];
+    let tempLang = [];
 
     for (let i = 0; i < stringLength; i++) {
         let ruleInput, tempLangIndex;
@@ -74,8 +73,4 @@ function testRegex(ruleString1, ruleString2) {
 
 function testRuleCharacters(ruleChar1, ruleChar2) {
     return lsystemLanguageRegex.test(ruleChar1) && lsystemLanguageRegex.test(ruleChar2) === true;
-}
-
-function validateLineLength(lineLength) {
-    return lineLength > 0;
 }
