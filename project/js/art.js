@@ -40,18 +40,39 @@ function drawGenericBezierCurve(context, colour, width, start, end, bezierStartP
 }
 
 /**
+ * Calculating coordinates along a cubic bézier curve
+ * http://www.independent-software.com/determining-coordinates-on-a-html-canvas-bezier-curve.html
+ * @param t
+ * @param startX
+ * @param startY
+ * @param controlPoint1X
+ * @param controlPoint1Y
+ * @param controlPoint2X
+ * @param controlPoint2Y
+ * @param endX
+ * @param endY
+ * @returns {{x: number, y: number}}
+ */
+function getBezierXY(t, startX, startY, controlPoint1X, controlPoint1Y, controlPoint2X, controlPoint2Y, endX, endY) {
+    return {
+        x: Math.pow(1-t,3) * startX + 3 * t * Math.pow(1 - t, 2) * controlPoint1X
+            + 3 * t * t * (1 - t) * controlPoint2X + t * t * t * endX,
+        y: Math.pow(1-t,3) * startY + 3 * t * Math.pow(1 - t, 2) * controlPoint1Y
+            + 3 * t * t * (1 - t) * controlPoint2Y + t * t * t * endY
+    };
+}
+
+/**
  *
  * @param context
  * @param x
  * @param y
- * @param length
  * @param radius
- * @param angle
- * @param rotation
+ * @param counterClock
  */
-function drawCircle(context, x, y, length, radius, angle, rotation) {
+function drawFilledCircle(context, x, y, radius, counterClock = false) {
     context.beginPath();
-    context.arc(x, y, length, radius, angle, rotation);
+    context.arc(x, y, radius, 0, Math.PI * 2, counterClock);
     context.fill();
     context.closePath();
 }
@@ -123,7 +144,7 @@ function degreeToRadian(degrees) {
  * @returns {boolean}
  */
 function validateAngle(angle) {
-    return (angle < 360 && angle > 0) === true;
+    return (angle < 360 && angle >= 0) === true;
 }
 
 /**
@@ -156,7 +177,7 @@ function canvasOnMouseOver(canvas, event) {
  * @param mouseVar
  */
 function canvasOnMouseClick(canvas, event, currentPointVar, mouseVar) {
-    let coordinates = canvasOnMouseOver(canvas, event);
+    const coordinates = canvasOnMouseOver(canvas, event);
     currentPointVar.x = coordinates.x;
     currentPointVar.y = coordinates.y;
 
@@ -188,9 +209,21 @@ function rotatePointDirection(b, angle, currentPointVar) {
     }
 }
 
+/**
+ * From start point, angle and line length, get the endpoint of the to-be line.
+ * @param startX
+ * @param startY
+ * @param lineLength
+ * @param theta
+ * @returns {{x: number, y: number}}
+ */
 function getEndpoints(startX, startY, lineLength, theta) {
     const x = Math.round(startX + lineLength * Math.cos(theta));
     const y = Math.round(startY + lineLength * Math.sin(theta));
 
     return { x, y };
+}
+
+function isMouseNil(mouseVar) {
+    return mouseVar.x === 0 && mouseVar.y === 0;
 }

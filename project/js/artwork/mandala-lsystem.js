@@ -1,17 +1,3 @@
-const mandalaCurrentPoint = {
-    'x': 0,
-    'y': 0,
-    'degrees': 0
-}
-
-const mandalaStashPoint = {
-    'x': 0,
-    'y': 0,
-    'degrees': 0
-}
-
-let endCoordinates = [];
-
 const mandalaData = {
     'rotationAngle': 15,
     'lineLength': 1,
@@ -27,6 +13,20 @@ const mandalaData = {
     'gradientColour1': "#801171",
     'gradientColour2': "#f1ff36",
 }
+
+const mandalaCurrentPoint = {
+    'x': 0,
+    'y': 0,
+    'degrees': 0
+}
+
+const mandalaStashPoint = {
+    'x': 0,
+    'y': 0,
+    'degrees': 0
+}
+
+let endCoordinates = [];
 
 function resetMandalaCanvas() {
     const mandalaCanvas = document.getElementById('mandalaLSystemCanvas');
@@ -85,9 +85,9 @@ function drawLSystemMandala(mcp, msp, md) {
 function drawMandalaLine(context, mcp, md) {
     const theta = degreeToRadian(mcp.degrees);
     const endpoints = getEndpoints(mcp.x, mcp.y, md.lineLength, theta)
-    drawGenericLine(context, mcp.x, mcp.y, md.lineColor, md.lineWidth, endpoints.endX, endpoints.endY);
-    mcp.x = endpoints.endX;
-    mcp.y = endpoints.endY;
+    drawGenericLine(context, mcp.x, mcp.y, md.lineColor, md.lineWidth, endpoints.x, endpoints.y);
+    mcp.x = endpoints.x;
+    mcp.y = endpoints.y;
 }
 
 function processMandalaString(context, string, mcp, msp, md) {
