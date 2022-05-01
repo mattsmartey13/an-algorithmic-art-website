@@ -7,10 +7,11 @@ const currentType = {
     maxAngle: 0,
     minBranches: 0,
     maxBranches: 0,
-    branchLength: 0,
+    branchLength: 1,
     branchStartIndex: 0,
     branchEndIndex: 0,
     stringLength: 0,
+    leafMultiplier: 1
 };
 
 const names = {
@@ -86,7 +87,6 @@ function gardenSetup() {
  * Used when the canvas is set up and the user clicks the canvas
  */
 function generateGardenComponent(gcp, gsp, ct, stringLength) {
-    stringLength = randomNumberBetweenRange(stringLength / 2, stringLength)
     const lSystemRule = ruleGenerator(ct, stringLength);
     if (ct.name !== names.grass) {
         interpretRule(lSystemRule, gcp, gsp, ct);
@@ -105,11 +105,13 @@ function generateGardenComponent(gcp, gsp, ct, stringLength) {
 /**
  * Takes the plant parameters and generates an L system
  * @param ct
- * @param length
+ * @param stringLength
  * @returns {*[]}
  */
-function ruleGenerator(ct, length) {
-    const gardenRuleArray = generateFractalString(length, ct.branchStartIndex);
+function ruleGenerator(ct, stringLength) {
+    const gardenRuleArray = generateFractalString(stringLength, ct.branchStartIndex);
+    if (ct.name === names.tree || ct.name === names.flower)
+        gardenRuleArray.push('C');
 
     /**
      * Insert brackets where it is worthwhile to, based on the type's given likeliness.
@@ -120,11 +122,11 @@ function ruleGenerator(ct, length) {
     const currentBranches = randomNumberBetweenRange(ct.minBranches, ct.maxBranches);
     if (currentBranches > 0) {
         for (let i = 0; i < currentBranches; i++) {
-            if (length > ct.branchStartIndex) {
+            if (stringLength > ct.branchStartIndex) {
                 let branchIndex = randomNumberBetweenRange(ct.branchStartIndex, ct.branchEndIndex);
                 gardenRuleArray.splice(branchIndex, 0, "[")
                 gardenRuleArray.splice(branchIndex + 1, 0, "]");
-                ct.branchStartIndex += 1;
+                ct.branchStartIndex = branchIndex + 2;
             }
         }
     }
@@ -139,31 +141,32 @@ function ruleGenerator(ct, length) {
 function setPlantProperties(typeName) {
     const gardenCanvas = document.getElementById('gardenCanvas');
     const gardenContext = gardenCanvas.getContext('2d');
+    const gcp = gardenCurrentPoint, ct = currentType;
 
     switch (typeName) {
         case "Flower":
             gardenContext.strokeStyle = "#446327";
-            setBaseFlowerSettings();
+            setBaseFlowerSettings(gcp, ct);
             break;
         case "Tree":
             gardenContext.strokeStyle = "#6e4300";
             gardenContext.fillStyle = "#087000";
-            setBaseTreeSettings();
+            setBaseTreeSettings(gcp, ct);
             break;
         case "Shoot":
             gardenContext.strokeStyle = "#25523b";
             gardenContext.fillStyle = "#5aab61";
-            setBaseShootSettings();
+            setBaseShootSettings(gcp, ct);
             break;
         case "Cloud":
             gardenContext.strokeStyle = "#A9B7B4";
             gardenContext.fillStyle = "#A9B7B4";
-            setBaseCloudSettings();
+            setBaseCloudSettings(gcp, ct);
             break;
         case "Grass":
             gardenContext.strokeStyle = "#348C31";
             gardenContext.fillStyle = "#348C31";
-            setBaseGrassSettings();
+            setBaseGrassSettings(gcp, ct);
             break;
     }
     gardenContext.save();
@@ -180,26 +183,10 @@ function setPlantProperties(typeName) {
 function interpretRule(gardenRuleArray, gcp, gsp, ct) {
     const gardenCanvas = document.getElementById('gardenCanvas');
     const gardenContext = gardenCanvas.getContext('2d');
-    validateDynamicPlantIntegers();
-    let index = 0;
+    validateDynamicPlantIntegers(gcp, ct);
     for (let character of gardenRuleArray) {
-        index++;
-        if (index % 5 === 0)
-            ct.width *= 0.9;
         switch (character) {
             case 'F':
-                const allLineIndexes = getAllIndexes(gardenRuleArray, 'F');
-                const stemRangeFromPeak = (bottom, top) => {
-                    return index - 1 >= allLineIndexes[allLineIndexes.length - bottom] && index - 1 <= allLineIndexes[allLineIndexes.length - top];
-                }
-
-                if (ct.name === names.tree && stemRangeFromPeak(2, 1)) {
-                    drawLeafCluster(gardenContext, ct, gcp.x, gcp.y, ct.length * 3)
-                }
-                if (ct.name === names.flower && stemRangeFromPeak(2, 1)) {
-                    gardenContext.fillStyle = returnRandomFlowerColour();
-                    drawLeafCluster(gardenContext, ct, gcp.x, gcp.y, ct.length * 1.2)
-                }
                 drawGardenLine(gcp, ct.length, ct.width, ct);
                 break;
             case '+':
@@ -211,32 +198,42 @@ function interpretRule(gardenRuleArray, gcp, gsp, ct) {
                 rotatePointDirection(false, ct.rotationAngle, gcp);
                 break;
             case '[':
-                let temp;
-                ct.rotationAngle = randomNumberBetweenRange(ct.minAngle, ct.maxAngle)
-                const angles = [gcp.degrees - ct.rotationAngle, gcp.degrees + ct.rotationAngle]
-                const rand = Math.round(Math.random())
-                if (rand === 0) {
-                    temp = angles[0]
-                    setPointFromPoint(gsp, gcp.x, gcp.y, temp);
-                } else {
-                    temp = angles[1]
-                    setPointFromPoint(gsp, gcp.x, gcp.y, temp);
-                }
-                ct.length *= 0.8;
-
-                generateGardenComponent(gsp, gcp, ct, ct.branchLength);
-                if (ct.name === names.tree)
-                    drawLeafCluster(gardenContext, ct, gsp.x, gsp.y, ct.length * 2)
-
+                const angle = randomAngle(gcp, ct);
+                branchBehaviour(ct)
+                setPointFromPoint(gsp, gcp.x, gcp.y, angle);
                 generateGardenComponent(gcp, gsp, ct, ct.branchLength);
-                if (ct.name === names.tree)
-                    drawLeafCluster(gardenContext, ct, gcp.x, gcp.y, ct.length * 2)
                 break;
             case ']':
                 setPointFromPoint(gcp, gsp.x, gsp.y, gsp.degrees);
+                gcp.degrees = randomAngle(gcp, ct);
+                break;
+            case 'C':
+                if (ct.name === names.flower)
+                    gardenContext.fillStyle = returnRandomFlowerColour();
+                drawLeafCluster(gardenContext, ct, gcp.x, gcp.y, ct.length * ct.leafMultiplier)
                 break;
         }
     }
+}
+
+function randomAngle(gcp, ct) {
+    let angle;
+    const angles = [gcp.degrees - ct.rotationAngle, gcp.degrees + ct.rotationAngle]
+    const rand = Math.round(Math.random())
+    ct.rotationAngle = randomNumberBetweenRange(ct.maxAngle, ct.maxAngle);
+    if (rand === 0) {
+        angle = angles[0]
+    } else {
+        angle = angles[1]
+    }
+    return angle;
+}
+
+function branchBehaviour(ct) {
+    ct.rotationAngle = randomNumberBetweenRange(ct.minAngle, ct.maxAngle);
+    Math.round(ct.length *= 0.8);
+    Math.round(ct.width *= 0.8);
+    Math.round(ct.stringLength *= 0.8);
 }
 
 /**
@@ -310,100 +307,103 @@ function returnRandomFlowerColour() {
 /**
  * Ensure we are passing integers to plant variables that see a lot of value changes
  */
-function validateDynamicPlantIntegers() {
-    parseInt(gardenCurrentPoint.degrees);
-    parseInt(gardenCurrentPoint.x);
-    parseInt(gardenCurrentPoint.y);
-    parseInt(currentType.degrees);
+function validateDynamicPlantIntegers(gcp, ct) {
+    parseInt(gcp.degrees);
+    parseInt(gcp.x);
+    parseInt(gcp.y);
+    parseInt(ct.degrees);
 }
 
 /**
  * Shoot settings setter
  */
-function setBaseShootSettings() {
-    gardenCurrentPoint.degrees = 270;
-    currentType.name = names.shoot;
-    currentType.rotationAngle = 20;
-    currentType.length = 5;
-    currentType.width = 1.5;
-    currentType.minAngle = 5;
-    currentType.maxAngle = 20;
-    currentType.minBranches = 0;
-    currentType.maxBranches = 1;
-    currentType.branchLength = 3;
-    currentType.stringLength = 12;
-    currentType.branchStartIndex = 5;
-    currentType.branchEndIndex = 10
+function setBaseShootSettings(gcp, ct) {
+    gcp.degrees = 270;
+    ct.name = names.shoot;
+    ct.rotationAngle = 20;
+    ct.length = 5;
+    ct.width = 1.5;
+    ct.minAngle = 5;
+    ct.maxAngle = 20;
+    ct.minBranches = 0;
+    ct.maxBranches = 1;
+    ct.branchLength = 3;
+    ct.stringLength = 12;
+    ct.branchStartIndex = 5;
+    ct.branchEndIndex = 10
 }
 
 /**
  * Grass settings setter
  */
-function setBaseGrassSettings() {
-    gardenCurrentPoint.degrees = 270;
-    currentType.name = names.grass;
-    currentType.rotationAngle = 5;
-    currentType.length = 2.5;
-    currentType.width = 1.5;
-    currentType.minAngle = 1;
-    currentType.maxAngle = 10;
-    currentType.minBranches = 0;
-    currentType.maxBranches = 0;
-    currentType.stringLength = 10;
-    currentType.branchStartIndex = 5;
-    currentType.branchEndIndex = 10;
+function setBaseGrassSettings(gcp, ct) {
+    gcp.degrees = 270;
+    ct.name = names.grass;
+    ct.rotationAngle = 5;
+    ct.length = 2.5;
+    ct.width = 1.5;
+    ct.minAngle = 1;
+    ct.maxAngle = 10;
+    ct.minBranches = 0;
+    ct.maxBranches = 0;
+    ct.stringLength = 10;
+    ct.branchStartIndex = 5;
+    ct.branchEndIndex = 10;
 }
 
 /**
  * Cloud settings setter
  */
-function setBaseCloudSettings() {
-    gardenCurrentPoint.degrees = 0;
-    currentType.name = names.cloud;
-    currentType.rotationAngle = 15;
-    currentType.length = 5;
-    currentType.width = 5;
-    currentType.minAngle = 5;
-    currentType.maxAngle = 20;
-    currentType.minBranches = 0;
-    currentType.maxBranches = 2;
-    currentType.stringLength = 15;
-    currentType.branchStartIndex = 5;
-    currentType.branchEndIndex = 15;
+function setBaseCloudSettings(gcp, ct) {
+    gcp.degrees = 0;
+    ct.name = names.cloud;
+    ct.rotationAngle = 15;
+    ct.length = 5;
+    ct.width = 5;
+    ct.minAngle = 5;
+    ct.maxAngle = 20;
+    ct.minBranches = 0;
+    ct.maxBranches = 2;
+    ct.stringLength = 15;
+    ct.branchStartIndex = 5;
+    ct.branchEndIndex = 15;
+    ct.leafMultiplier = 1.5
 }
 
 /**
  * Flower settings setter
  */
-function setBaseFlowerSettings() {
-    gardenCurrentPoint.degrees = 270;
-    currentType.name = names.flower;
-    currentType.rotationAngle = 15;
-    currentType.length = 3;
-    currentType.width = 2;
-    currentType.minAngle = 5;
-    currentType.maxAngle = 20;
-    currentType.minBranches = 1;
-    currentType.maxBranches = 3;
-    currentType.branchLength = 4;
-    currentType.stringLength = 15;
-    currentType.branchStartIndex = 8;
-    currentType.branchEndIndex = 13;
+function setBaseFlowerSettings(gcp, ct) {
+    gcp.degrees = 270;
+    ct.name = names.flower;
+    ct.rotationAngle = 15;
+    ct.length = 3;
+    ct.width = 2;
+    ct.minAngle = 5;
+    ct.maxAngle = 20;
+    ct.minBranches = 1;
+    ct.maxBranches = 3;
+    ct.branchLength = 4;
+    ct.stringLength = 15;
+    ct.branchStartIndex = 8;
+    ct.branchEndIndex = 13;
+    ct.leafMultiplier = 1.2
 }
 
-function setBaseTreeSettings() {
-    gardenCurrentPoint.degrees = 270;
-    currentType.name = names.tree;
-    currentType.rotationAngle = 20;
-    currentType.length = 10;
-    currentType.width = 25;
-    currentType.minAngle = 10;
-    currentType.maxAngle = 40;
-    currentType.minBranches = 10;
-    currentType.maxBranches = 15;
-    currentType.branchLength = 15;
-    currentType.stringLength = 40;
-    currentType.branchStartIndex = 10;
-    currentType.branchEndIndex = 35;
+function setBaseTreeSettings(gcp, ct) {
+    gcp.degrees = 270;
+    ct.name = names.tree;
+    ct.rotationAngle = 20;
+    ct.length = 10;
+    ct.width = 25;
+    ct.minAngle = 10;
+    ct.maxAngle = 40;
+    ct.minBranches = 10;
+    ct.maxBranches = 15;
+    ct.stringLength = 40;
+    ct.branchLength = 15;
+    ct.branchStartIndex = 10;
+    ct.branchEndIndex = 35;
+    ct.leafMultiplier = 4;
 }
 

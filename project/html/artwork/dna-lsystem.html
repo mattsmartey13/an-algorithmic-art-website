@@ -48,9 +48,9 @@
         <label for="lSystemDNAHelixLength">Helix backbone length</label>
         <input type="number" id="lSystemDNAHelixLength" value="40">
         <label for="lSystemDNAIterations">Number of iterations 1-4</label>
-        <input type="range" id="lSystemDNAIterations" min="1" max="4" value="2">
-        <button id="lSystemDNADraw" onclick="drawDoubleHelix()">Draw DNA</button>
-        <button id="lSystemDNAReset" onclick="resetDnaCanvas()">Reset canvas</button>
+        <input type="range" id="lSystemDNAIterations" min="1" max="8" value="2">
+        <button id="lSystemDNADraw" onclick="drawDoubleHelix(dnaData, dnaCurrentPoint)">Draw DNA</button>
+        <button id="lSystemDNAReset" onclick="resetDnaCanvas(dnaCurrentPoint, dnaMouse)">Reset canvas</button>
     </div>
     <div>
         <p>
