@@ -6,7 +6,7 @@ const dnaMouse = {
 const dnaCurrentPoint = {
     x: 0,
     y: 0,
-    degrees: 33,
+    degrees: 0,
 }
 
 const dnaData = {
@@ -19,7 +19,12 @@ const dnaData = {
     helixDistance: 0,
     helixLength: 15,
     basePairs: 2,
-    iterations: 1
+    iterations: 1,
+    axiom: "A",
+    aRule: "TCA",
+    gRule: "ATG",
+    tRule: "CGA",
+    cRule: "AAC"
 }
 
 function dnaCanvasOnMouseOver(event) {
@@ -36,150 +41,123 @@ function dnaCanvasOnMouseClick(event) {
     $("#lSystemDNAMouseY").html("Y: " + dnaMouse.y);
 }
 
-function resetDnaCanvas() {
+function resetDnaCanvas(dcp, dm) {
     const canvas = document.getElementById('lSystemDNACanvas');
-    resetLSystemCanvas(canvas, dnaCurrentPoint, dnaMouse);
+    resetLSystemCanvas(canvas, dcp, dm);
 
 }
 
-function drawDoubleHelix() {
+function drawDoubleHelix(dnaData, dcp) {
     const canvas = document.getElementById('lSystemDNACanvas');
     const context = canvas.getContext('2d');
 
-    const iterations = $('#lSystemDNAIterations').val();
-    const numberPairs = $('#lSystemDNABasePairs').val();
-    const helixDistance = $('#lSystemDNAHelixDistance').val();
-    const helixLength = $('#lSystemDNAHelixLength').val();
-    const newValues = validatedDNAInputsArray(iterations, helixDistance, helixLength, numberPairs);
-    setInputValues(dnaData, newValues[0], newValues[1], newValues[2], newValues[3]);
+    setInputValues(dnaData);
 
-    const axiom = $('#lSystemDNAAxiom').val();
-    const aBecomes = $('#lSystemDNAAdenineRec').val();
-    const gBecomes = $('#lSystemDNAGuanineRec').val();
-
-    const tBecomes = $('#lSystemDNAThymineRec').val();
-    const cBecomes = $('#lSystemDNACytosineRec').val();
-
-    const ogDNA = generateDNABasesBase(axiom, aBecomes, gBecomes, tBecomes, cBecomes, iterations);
-    const OGDNAArray = groupArrayInSetsOfN(dnaData.basePairs, Array.from(generateDNABasesBase(axiom, aBecomes, gBecomes, tBecomes, cBecomes, iterations)));
-    const parallel = groupArrayInSetsOfN(dnaData.basePairs, Array.from(createContemporaryDNAString(ogDNA)));
+    const ogDNA = returnDNASingleStrand(dnaData);
+    const ogDNAArray = groupArrayInSetsOfN(dnaData.basePairs, Array.from(ogDNA));
+    const parallel = groupArrayInSetsOfN(dnaData.basePairs, Array.from(createParallelDNAStrand(ogDNA)));
     const t = (1 / dnaData.basePairs.toFixed(2));
-    for (let i = 0; i < OGDNAArray.length; i++)
-        drawDNASection(context, dnaData, t, OGDNAArray[i], parallel[i]);
+
+    for (let i = 0; i < ogDNAArray.length; i++)
+        drawDNASection(context, dcp, dnaData, t, ogDNAArray[i], parallel[i]);
 }
 
-function drawDNASection(context, dnaData, t, leftBases, rightBases) {
+function drawDNASection(context, dcp, dnaData, t, leftBases, rightBases) {
     const backBoneLeft = [], backBoneRight = []
-    let start = {
-        x: dnaCurrentPoint.x,
-        y: dnaCurrentPoint.y,
-        degrees: dnaCurrentPoint.degrees
-    }
-
-    const theta = degreeToRadian(start.degrees);
-    const end = getEndpoints(start.x, start.y, dnaData.helixLength, theta)
-    end.degrees = start.degrees;
+    const theta = degreeToRadian(dcp.degrees);
+    const end = getEndpoints(dcp.x, dcp.y, dnaData.helixLength, theta)
+    end.degrees = dcp.degrees;
 
     let rightBezierStart, rightBezierEnd, leftBezierStart, leftBezierEnd;
-    if (start.degrees >= 180 && start.degrees <= 359) {
-        rightBezierStart = returnDNABezierPoint(start.x, start.y, start.degrees, 0, dnaData.helixDistance);
+    if (dcp.degrees >= 180 && dcp.degrees <= 359) {
+        rightBezierStart = returnDNABezierPoint(dcp.x, dcp.y, dcp.degrees, 0, dnaData.helixDistance);
         rightBezierEnd = returnDNABezierPoint(end.x, end.y, end.degrees, 0, dnaData.helixDistance);
-        leftBezierStart = returnDNABezierPoint(start.x, start.y, start.degrees, 1, dnaData.helixDistance);
+        leftBezierStart = returnDNABezierPoint(dcp.x, dcp.y, dcp.degrees, 1, dnaData.helixDistance);
         leftBezierEnd = returnDNABezierPoint(end.x, end.y, end.degrees, 1, dnaData.helixDistance);
     } else {
-        rightBezierStart = returnDNABezierPoint(start.x, start.y, start.degrees, 1, dnaData.helixDistance);
+        rightBezierStart = returnDNABezierPoint(dcp.x, dcp.y, dcp.degrees, 1, dnaData.helixDistance);
         rightBezierEnd = returnDNABezierPoint(end.x, end.y, end.degrees, 1, dnaData.helixDistance);
-        leftBezierStart = returnDNABezierPoint(start.x, start.y, start.degrees, 0, dnaData.helixDistance);
+        leftBezierStart = returnDNABezierPoint(dcp.x, dcp.y, dcp.degrees, 0, dnaData.helixDistance);
         leftBezierEnd = returnDNABezierPoint(end.x, end.y, end.degrees, 0, dnaData.helixDistance);
     }
 
-    drawGenericBezierCurve(context, dnaData.backboneColour, dnaData.backBoneLineWidth, start, end, rightBezierStart, rightBezierEnd);
-    drawGenericBezierCurve(context, dnaData.backboneColour, dnaData.backBoneLineWidth, start, end, leftBezierStart, leftBezierEnd);
+    drawGenericBezierCurve(context, dnaData.backboneColour, dnaData.backBoneLineWidth, dcp, end, rightBezierStart, rightBezierEnd);
+    drawGenericBezierCurve(context, dnaData.backboneColour, dnaData.backBoneLineWidth, dcp, end, leftBezierStart, leftBezierEnd);
 
     let tempT = t;
     for (let i = 0; i < dnaData.basePairs; i++) {
         backBoneRight.push(
             getBezierXY(
-                tempT, start.x, start.y, rightBezierStart.x, rightBezierStart.y, rightBezierEnd.x, rightBezierEnd.y, end.x, end.y
+                tempT, dcp.x, dcp.y, rightBezierStart.x, rightBezierStart.y, rightBezierEnd.x, rightBezierEnd.y, end.x, end.y
             )
         );
 
         backBoneLeft.push(
             getBezierXY(
-                tempT, start.x, start.y, leftBezierStart.x, leftBezierStart.y, leftBezierEnd.x, leftBezierEnd.y, end.x, end.y
+                tempT, dcp.x, dcp.y, leftBezierStart.x, leftBezierStart.y, leftBezierEnd.x, leftBezierEnd.y, end.x, end.y
             )
         );
 
         const midway = getMidwayCoordinate(backBoneRight[i], backBoneLeft[i]);
-        drawDNABase(context, rightBases[i], backBoneRight[i], dnaData.backBoneLineWidth, midway)
-        drawDNABase(context, leftBases[i], backBoneLeft[i], dnaData.backBoneLineWidth, midway)
+        drawDNABase(context, rightBases[i], backBoneRight[i], dnaData, midway)
+        drawDNABase(context, leftBases[i], backBoneLeft[i], dnaData, midway)
         tempT += t;
     }
 
-    dnaCurrentPoint.x = end.x;
-    dnaCurrentPoint.y = end.y;
-    dnaCurrentPoint.degrees = end.degrees;
+    dcp.x = end.x;
+    dcp.y = end.y;
+    dcp.degrees = end.degrees;
 }
 
-function generateDNABasesBase(axiom, aRule, cRule, tRule, gRule, iterations) {
-    let fullString = "";
-    fullString += axiom;
-
-    for (let i = 0; i < iterations; i++) {
-        fullString += DNALSystemCompute(fullString, aRule, gRule, tRule, cRule)
-    }
-
-    return fullString;
-}
-
-function DNALSystemCompute(string, aRule, gRule, tRule, cRule) {
-    let newString = "";
-    for (let character of string) {
-        switch (character) {
-            case "A":
-                newString += aRule;
-                break;
-            case "G":
-                newString += gRule;
-                break;
-            case "T":
-                newString += tRule;
-                break;
-            case "C":
-                newString += cRule;
-                break;
-            default:
-                break;
+function returnDNASingleStrand(dnaData) {
+    let newString = dnaData.axiom;
+    for (let i = 0; i < dnaData.iterations; i++) {
+        for (let character of newString) {
+            switch (character) {
+                case "A":
+                    newString += dnaData.aRule;
+                    break;
+                case "G":
+                    newString += dnaData.gRule;
+                    break;
+                case "T":
+                    newString += dnaData.tRule;
+                    break;
+                case "C":
+                    newString += dnaData.cRule;
+                    break;
+                default:
+                    break;
+            }
         }
     }
     return newString;
 }
 
-function createContemporaryDNAString(OGDNAArray) {
-    let newString = "";
-
+function createParallelDNAStrand(OGDNAArray) {
+    let string = "";
     for (let character of OGDNAArray) {
         switch (character) {
             case "A":
-                newString += "T";
+                string += "T";
                 break;
             case "G":
-                newString += "C";
+                string += "C";
                 break;
             case "T":
-                newString += "A";
+                string += "A";
                 break;
             case "C":
-                newString += "G";
+                string += "G";
                 break;
             default:
                 break;
         }
     }
-    return newString;
+    return string;
 }
 
-function drawDNABase(context, base, startXY, lineWidth, endXY) {
+function drawDNABase(context, base, startXY, dnaData, endXY) {
     const colour = () => {
         switch (base) {
             case "A":
@@ -194,7 +172,7 @@ function drawDNABase(context, base, startXY, lineWidth, endXY) {
                 return "#000000";
         }
     }
-    drawGenericLine(context, startXY.x, startXY.y, colour(), lineWidth, endXY.x, endXY.y);
+    drawGenericLine(context, startXY.x, startXY.y, colour(), dnaData.lineWidth, endXY.x, endXY.y);
 }
 
 /**
@@ -224,34 +202,18 @@ function returnDNABezierPoint(x, y, degrees, dir, helixDistance) {
     return getEndpoints(x, y, helixDistance * 2, theta)
 }
 
-function setIterationsNumber(value) {
-    dnaData.iterations = value;
-}
-
-function setHelixDistance(value) {
-    dnaData.helixDistance = value;
-}
-
-function setHelixLength(value) {
-    dnaData.helixLength = value;
-}
-
-function setInputValues(dnaDataObj, iterations, helixDistance, helixLength, basePairsPerSection) {
-    dnaDataObj.adenineColour = document.getElementById('lSystemDNAAdenine').value
-    dnaDataObj.thymineColour = document.getElementById('lSystemDNAThymine').value
-    dnaDataObj.guanineColour = document.getElementById('lSystemDNAGuanine').value
-    dnaDataObj.cytosineColour = document.getElementById('lSystemDNACytosine').value
-
-    setIterationsNumber(iterations);
-    setHelixDistance(helixDistance);
-    setHelixLength(helixLength);
-    setDNABasePairsPerSection(basePairsPerSection)
-}
-
-function validatedDNAInputsArray(iterations, helixDistance, helixLength, basePairs) {
-    return [parseInt(iterations), parseInt(helixDistance), parseInt(helixLength), parseInt(basePairs)];
-}
-
-function setDNABasePairsPerSection(value) {
-    dnaData.basePairs = value + 1;
+function setInputValues(dnaData) {
+    dnaData.adenineColour = $('#lSystemDNAAdenine').val();
+    dnaData.thymineColour = $('#lSystemDNAThymine').val();
+    dnaData.guanineColour = $('#lSystemDNAGuanine').val();
+    dnaData.cytosineColour = $('#lSystemDNACytosine').val();
+    dnaData.iterations = parseInt($("#lSystemDNAIterations").val());
+    dnaData.basePairs = parseInt($("#lSystemDNABasePairs").val());
+    dnaData.helixDistance = parseInt(($("#lSystemDNAHelixDistance")).val())
+    dnaData.helixLength = parseInt(($("#lSystemDNAHelixLength")).val())
+    dnaData.axiom = $("#lSystemDNAAxiom").val();
+    dnaData.aRule = $("#lSystemDNAAdenineRec").val();
+    dnaData.gRule = $("#lSystemDNAGuanineRec").val();
+    dnaData.tRule = $("#lSystemDNAThymineRec").val();
+    dnaData.cRule = $("#lSystemDNACytosineRec").val();
 }

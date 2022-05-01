@@ -2,9 +2,7 @@ const lsystemLanguageRegex = /^[F+\-\[\]]*$/;
 const regexAB = /^[a-bA-B]*$/
 const regexDNA = /^[CAGTcagt]+$/
 const lSystemLanguage = ['F', '+', '-'];
-const lSystemLanguageWithBrackets = ['F', '+', '-', '[', ']'];
 Object.freeze(lSystemLanguage);
-Object.freeze(lSystemLanguageWithBrackets);
 
 /**
  * Helper method for branching
