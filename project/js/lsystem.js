@@ -1,6 +1,3 @@
-const lsystemLanguageRegex = /^[F+\-\[\]]*$/;
-const regexAB = /^[a-bA-B]*$/
-const regexDNA = /^[CAGTcagt]+$/
 const lSystemLanguage = ['F', '+', '-'];
 Object.freeze(lSystemLanguage);
 
@@ -31,15 +28,14 @@ function groupArrayInSetsOfN(n, data)  {
     return result;
 }
 
-function getAllIndexes(arr, val) {
-    let indexes = [], i;
-    for (i = 0; i < arr.length; i++)
-        if (arr[i] === val)
-            indexes.push(i);
-    return indexes;
-}
-
-function generateFractalString(stringLength, branchStartIndex) {
+/**
+ * L-system builder
+ *
+ * @param stringLength
+ * @param branchStartIndex
+ * @returns {*[]}
+ */
+function generateRandomisedLSystemString(stringLength, branchStartIndex) {
     const ruleArray = [];
     let tempLang = [];
 
@@ -65,10 +61,24 @@ function generateFractalString(stringLength, branchStartIndex) {
     return ruleArray;
 }
 
-function testRegex(ruleString1, ruleString2) {
-    return regexAB.test(ruleString1) && regexAB.test(ruleString2) === true;
-}
-
-function testRuleCharacters(ruleChar1, ruleChar2) {
-    return lsystemLanguageRegex.test(ruleChar1) && lsystemLanguageRegex.test(ruleChar2) === true;
+/**
+ * Generic L-system builder from an axiom and a set of rules
+ * Requires an axiom string, built from F, +  and -
+ * Requires a rules object to substitute F into a production rule, along with + and -
+ * @param start
+ * @param rules
+ * @returns {string}
+ */
+function generateLSystem(start, rules) {
+    let lSystem = "";
+    for (let c in start) {
+        if (start[c] === rules.axi) {
+            lSystem += $("#production").val();
+        } else if (start[c] === rules.plus) {
+            lSystem += rules.plus;
+        } else if (start[c] === rules.minus) {
+            lSystem += rules.minus;
+        }
+    }
+    return lSystem;
 }

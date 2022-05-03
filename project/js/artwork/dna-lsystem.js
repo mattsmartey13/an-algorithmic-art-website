@@ -1,14 +1,3 @@
-const dnaMouse = {
-    x: 0,
-    y: 0
-}
-
-const dnaCurrentPoint = {
-    x: 0,
-    y: 0,
-    degrees: 0,
-}
-
 const dnaData = {
     adenineColour: "#007fff",
     thymineColour: "#F7CC43",
@@ -27,39 +16,33 @@ const dnaData = {
     cRule: "AAC"
 }
 
-function dnaCanvasOnMouseOver(event) {
-    const canvas = document.getElementById('lSystemDNACanvas');
-    const coordinates = canvasOnMouseOver(canvas, event);
-    $("#lSystemDNAMouseFloatX").html("X: " + coordinates.x);
-    $("#lSystemDNAMouseFloatY").html("Y: " + coordinates.y);
-}
-
-function dnaCanvasOnMouseClick(event) {
-    const canvas = document.getElementById('lSystemDNACanvas');
-    canvasOnMouseClick(canvas, event, dnaCurrentPoint, dnaMouse);
-    $("#lSystemDNAMouseX").html("X: " + dnaMouse.x);
-    $("#lSystemDNAMouseY").html("Y: " + dnaMouse.y);
-}
-
-function resetDnaCanvas(dcp, dm) {
-    const canvas = document.getElementById('lSystemDNACanvas');
-    resetLSystemCanvas(canvas, dcp, dm);
-
-}
-
-function drawDoubleHelix(dnaData, dcp) {
+function drawDoubleHelix(dnaData) {
     const canvas = document.getElementById('lSystemDNACanvas');
     const context = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.save();
 
-    setInputValues(dnaData);
+    setInputValues(dnaData, canvas);
 
-    const ogDNA = returnDNASingleStrand(dnaData);
+    const ogDNA = returnDNAOriginalChain(dnaData);
     const ogDNAArray = groupArrayInSetsOfN(dnaData.basePairs, Array.from(ogDNA));
     const parallel = groupArrayInSetsOfN(dnaData.basePairs, Array.from(createParallelDNAStrand(ogDNA)));
     const t = (1 / dnaData.basePairs.toFixed(2));
 
-    for (let i = 0; i < ogDNAArray.length; i++)
-        drawDNASection(context, dcp, dnaData, t, ogDNAArray[i], parallel[i]);
+    const dnaCurrentPoint = {
+        'x': getStartingDNAXPoint(rect, ogDNAArray, dnaData),
+        'y': getStartingDNAYPoint(rect, ogDNAArray, dnaData),
+        'degrees': 0
+    }
+
+    for (let i = 0; i < ogDNAArray.length; i++) {
+        if (dnaCurrentPoint.x > rect.width || dnaCurrentPoint.x < 0)
+            moveDown(dnaCurrentPoint, dnaData, rect);
+
+        drawDNASection(context, dnaCurrentPoint, dnaData, t, ogDNAArray[i], parallel[i]);
+    }
+
 }
 
 function drawDNASection(context, dcp, dnaData, t, leftBases, rightBases) {
@@ -109,7 +92,38 @@ function drawDNASection(context, dcp, dnaData, t, leftBases, rightBases) {
     dcp.degrees = end.degrees;
 }
 
-function returnDNASingleStrand(dnaData) {
+function moveDown(dcp, dnaData, rect) {
+    dcp.y += (dnaData.helixLength * 1.5)
+
+    if (dcp.degrees === 0) {
+        dcp.x = rect.width
+        dcp.degrees = 180;
+    } else {
+        dcp.x = 0;
+        dcp.degrees = 0;
+    }
+}
+
+function getStartingDNAXPoint(rect, ogDNAArray, dnaData) {
+    if (ogDNAArray.length === 1)
+        return (rect.width / 2) - dnaData.helixDistance;
+    if (ogDNAArray.length === 2)
+        return (rect.width / 3) - dnaData.helixDistance;
+    if ((ogDNAArray.length * dnaData.helixDistance * dnaData.iterations) >= rect.width)
+        return 0;
+    else
+        return (rect.width - (dnaData.helixDistance * ogDNAArray.length * dnaData.iterations)) / 2;
+}
+
+function getStartingDNAYPoint(rect, ogDNAArray, dnaData) {
+    if ((ogDNAArray.length * dnaData.helixDistance * dnaData.iterations) > rect.width) {
+        return dnaData.helixLength;
+    } else {
+        return rect.height / 2
+    }
+}
+
+function returnDNAOriginalChain(dnaData) {
     let newString = dnaData.axiom;
     for (let i = 0; i < dnaData.iterations; i++) {
         for (let character of newString) {
@@ -202,15 +216,15 @@ function returnDNABezierPoint(x, y, degrees, dir, helixDistance) {
     return getEndpoints(x, y, helixDistance * 2, theta)
 }
 
-function setInputValues(dnaData) {
+function setInputValues(dnaData, canvas) {
     dnaData.adenineColour = $('#lSystemDNAAdenine').val();
     dnaData.thymineColour = $('#lSystemDNAThymine').val();
     dnaData.guanineColour = $('#lSystemDNAGuanine').val();
     dnaData.cytosineColour = $('#lSystemDNACytosine').val();
     dnaData.iterations = parseInt($("#lSystemDNAIterations").val());
+    dnaData.helixLength = (canvas.width / 3) / dnaData.iterations;
+    dnaData.helixDistance = dnaData.helixLength / 2;
     dnaData.basePairs = parseInt($("#lSystemDNABasePairs").val());
-    dnaData.helixDistance = parseInt(($("#lSystemDNAHelixDistance")).val())
-    dnaData.helixLength = parseInt(($("#lSystemDNAHelixLength")).val())
     dnaData.axiom = $("#lSystemDNAAxiom").val();
     dnaData.aRule = $("#lSystemDNAAdenineRec").val();
     dnaData.gRule = $("#lSystemDNAGuanineRec").val();

@@ -14,13 +14,13 @@
 <div id="lSystemDNAInputs">
     <div id="lSystemDNABaseGrid">
         <label for="lSystemDNAAdenine">Adenine base colour</label>
-        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAAdenine" value="#007fff"/>
+        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAAdenine" value="#007fff" onchange="drawDoubleHelix(dnaData)"/>
         <label for="lSystemDNAThymine">Thymine base colour</label>
-        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAThymine" value="#F7CC43">
+        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAThymine" value="#F7CC43" onchange="drawDoubleHelix(dnaData)">
         <label for="lSystemDNAGuanine">Guanine base colour</label>
-        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAGuanine" value="#00ff00"/>
+        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAGuanine" value="#00ff00" onchange="drawDoubleHelix(dnaData)"/>
         <label for="lSystemDNACytosine">Cytosine base colour</label>
-        <input type="color" class="lSystemDNABaseColours" id="lSystemDNACytosine" value="#ff0040"/>
+        <input type="color" class="lSystemDNABaseColours" id="lSystemDNACytosine" value="#ff0040" onchange="drawDoubleHelix(dnaData)"/>
     </div>
     <div id="lSystemDNARecursionGrid">
         <p>
@@ -30,41 +30,22 @@
             For best results, input 2-4 bases.
         </p>
         <label for="lSystemDNAAxiom">Axiom</label>
-        <input type="text" id="lSystemDNAAxiom" value="A">
+        <input type="text" id="lSystemDNAAxiom" value="A" onchange="drawDoubleHelix(dnaData)">
         <label for="lSystemDNAAdenineRec">A =</label>
-        <input type="text" id="lSystemDNAAdenineRec" value="GAC">
+        <input type="text" id="lSystemDNAAdenineRec" value="GAC" onchange="drawDoubleHelix(dnaData)">
         <label for="lSystemDNAGuanineRec">G = </label>
-        <input type="text" id="lSystemDNAGuanineRec" value="TAA">
+        <input type="text" id="lSystemDNAGuanineRec" value="TAA" onchange="drawDoubleHelix(dnaData)">
         <label for="lSystemDNAThymineRec">T = </label>
-        <input type="text" id="lSystemDNAThymineRec" value="CCG">
+        <input type="text" id="lSystemDNAThymineRec" value="CCG" onchange="drawDoubleHelix(dnaData)">
         <label for="lSystemDNACytosineRec">C = </label>
-        <input type="text" id="lSystemDNACytosineRec" value="TCA">
+        <input type="text" id="lSystemDNACytosineRec" value="TCA" onchange="drawDoubleHelix(dnaData)">
     </div>
     <div>
         <label for="lSystemDNABasePairs">Number of base pairs per section</label>
-        <input type="number" id="lSystemDNABasePairs" value="3">
-        <label for="lSystemDNAHelixDistance">Helix backbones distance</label>
-        <input type="number" id="lSystemDNAHelixDistance" value="20">
-        <label for="lSystemDNAHelixLength">Helix backbone length</label>
-        <input type="number" id="lSystemDNAHelixLength" value="40">
+        <input type="range" id="lSystemDNABasePairs" min="2" value="3" max="5" onchange="drawDoubleHelix(dnaData)">
         <label for="lSystemDNAIterations">Number of iterations 1-4</label>
-        <input type="range" id="lSystemDNAIterations" min="1" max="8" value="2">
-        <button id="lSystemDNADraw" onclick="drawDoubleHelix(dnaData, dnaCurrentPoint)">Draw DNA</button>
-        <button id="lSystemDNAReset" onclick="resetDnaCanvas(dnaCurrentPoint, dnaMouse)">Reset canvas</button>
-    </div>
-    <div>
-        <p>
-            Mouse position
-            <label id="lSystemDNAMouseX"></label>
-            <label id="lSystemDNAMouseY"></label>
-        </p>
-        <br>
-        <p>
-            Mouse float
-            <label id="lSystemDNAMouseFloatX"></label>
-            <label id="lSystemDNAMouseFloatY"></label>
-        </p>
+        <input type="range" id="lSystemDNAIterations" min="1" max="8" value="2" onchange="drawDoubleHelix(dnaData)">
     </div>
 </div>
-<canvas id="lSystemDNACanvas" onclick="dnaCanvasOnMouseClick(event)" onmousemove="dnaCanvasOnMouseOver(event)" width="1000" height="600" style="border:1px solid #000000"></canvas>
+<canvas id="lSystemDNACanvas" width="1000" height="600" style="border:1px solid #000000"></canvas>
 </body>
