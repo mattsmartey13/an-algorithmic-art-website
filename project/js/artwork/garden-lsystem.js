@@ -109,7 +109,7 @@ function generateGardenComponent(gcp, gsp, ct, stringLength) {
  * @returns {*[]}
  */
 function ruleGenerator(ct, stringLength) {
-    const gardenRuleArray = generateFractalString(stringLength, ct.branchStartIndex);
+    const gardenRuleArray = generateRandomisedLSystemString(stringLength, ct.branchStartIndex);
     if (ct.name === names.tree || ct.name === names.flower)
         gardenRuleArray.push('C');
 

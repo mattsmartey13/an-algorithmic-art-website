@@ -110,13 +110,13 @@ function processMandalaString(context, string, mcp, msp, md, endCoordinates) {
             case "[+]":
                 setPointFromPoint(msp, mcp.x, mcp.y, mcp.degrees);
                 rotatePointDirection(true, md.rotationAngle, msp)
-                branch = generateFractalString(Math.floor(md.branchLength), (Math.floor(2)))
+                branch = generateRandomisedLSystemString(Math.floor(md.branchLength), (Math.floor(2)))
                 processMandalaString(context, branch, msp, msp, md)
                 break;
             case "[-]":
                 setPointFromPoint(msp, mcp.x, mcp.y, mcp.degrees);
                 rotatePointDirection(false, md.rotationAngle, msp)
-                branch = generateFractalString(Math.floor(md.branchLength), (Math.floor(2)))
+                branch = generateRandomisedLSystemString(Math.floor(md.branchLength), (Math.floor(2)))
                 processMandalaString(context, branch, msp, mcp, md)
                 break;
         }

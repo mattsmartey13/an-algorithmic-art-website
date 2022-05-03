@@ -224,6 +224,15 @@ function getEndpoints(startX, startY, lineLength, theta) {
     return { x, y };
 }
 
-function isMouseNil(mouseVar) {
-    return mouseVar.x === 0 && mouseVar.y === 0;
+/**
+ * Build canvas background gradient
+ */
+function setCanvasColourGradient(canvas, colour1, colour2) {
+    const context = canvas.getContext("2d");
+    const canvasRect = canvas.getBoundingClientRect();
+    const grd = context.createLinearGradient(0, 0, canvasRect.width, canvasRect.height);
+    grd.addColorStop(0, colour1);
+    grd.addColorStop(1, colour2);
+    context.fillStyle = grd;
+    context.fillRect(0, 0, canvasRect.width, canvasRect.height);
 }
