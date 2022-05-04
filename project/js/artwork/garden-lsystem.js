@@ -1,3 +1,7 @@
+/**
+ * Global variable due to the amount of times the object properties change
+ * @type {{branchStartIndex: number, maxAngle: number, length: number, minAngle: number, maxBranches: number, branchLength: number, leafMultiplier: number, rotationAngle: number, name: string, width: number, branchEndIndex: number, stringLength: number, minBranches: number}}
+ */
 const currentType = {
     name: '',
     rotationAngle: 0,
@@ -80,6 +84,7 @@ function gardenSetup() {
     gardenContext.fillRect(0, gardenCanvas.height * 0.80, gardenCanvas.width, gardenCanvas.height * 0.05);
 
     $('#gardenSetupButton').attr('disabled', true);
+    $('#gardenClearCanvasButton').attr('disabled', false);
 }
 
 /**
@@ -292,7 +297,8 @@ function drawGardenLine(gcp, lineLength, lineWidth, ct) {
 function resetGardenCanvas() {
     const gardenCanvas = document.getElementById('gardenCanvas');
     resetLSystemCanvas(gardenCanvas, gardenCurrentPoint, gardenStashPoint, gardenMouse)
-    gardenSetup();
+    $('#gardenSetupButton').attr('disabled', false);
+    $('#gardenClearCanvasButton').attr('disabled', true);
 }
 
 /**

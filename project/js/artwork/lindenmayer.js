@@ -1,5 +1,14 @@
+/**
+ * One function called recursively until the line length is below a hardcoded value
+ * Change the value of len in the middle of the function to experiment with the tree's look.
+ * @param startX
+ * @param startY
+ * @param len
+ * @param angle
+ * @param branchWidth
+ */
 function drawLindenmayer(startX, startY, len, angle, branchWidth) {
-    const canvas = document.getElementById('lindenmayer1canvas');
+    const canvas = document.getElementById('lSystemTreeCanvas');
     const context = canvas.getContext('2d');
 
     //setup
@@ -10,7 +19,6 @@ function drawLindenmayer(startX, startY, len, angle, branchWidth) {
     context.shadowColor = "rgba(0,0,0,0.8)";
 
     //create two distinct paths at the end of the trunk
-    //"initial state"
     context.beginPath();
     context.save();
 
@@ -26,16 +34,16 @@ function drawLindenmayer(startX, startY, len, angle, branchWidth) {
 
     //go back to initial state - one branch with two heads
     //if len is too small
-    //this also will determine the number of branches stemming off the main
-    if (len < 5) {
+    if (len < 15) {
         context.beginPath();
         //leaves use arc & fill methods (circle slices)
-        context.arc(0, -len, 10, 0, Math.PI / 2);
+        context.arc(0, -len, len, 0, Math.PI / 2);
         context.fill();
         context.restore();
         return;
     }
-    //recursive call to create left & right branches 10 deg to side
+    //draw left and right branches
+    //call again and again until len is below 15
     //shrink len and branch width by 20% each time
     drawLindenmayer(0, -len, len * 0.8, angle + 10, branchWidth * 0.8);
     drawLindenmayer(0, -len, len * 0.8, angle - 10, branchWidth * 0.8);

@@ -1,3 +1,29 @@
+const fractalCurrentPoint = {
+    x: 0,
+    y: 0,
+    degrees: 0
+}
+
+const fractalMouse = {
+    x: 0,
+    y: 0,
+}
+
+function onFractalMouseOver(event) {
+    const canvas = document.getElementById('fractalLSystemCanvas');
+    const coordinates = canvasOnMouseOver(canvas, event);
+    $('#fractalMouseFloatX').html(coordinates.x);
+    $('#fractalMouseFloatY').html(coordinates.y);
+}
+
+function onFractalMouseClick(event) {
+    const canvas = document.getElementById('fractalLSystemCanvas');
+    canvasOnMouseClick(canvas, event, fractalCurrentPoint, fractalMouse);
+    $("#fractalMouseX").html("X: " + fractalMouse.x);
+    $("#fractalMouseY").html("Y: " + fractalMouse.y);
+    drawCustomFractal();
+}
+
 /**
  * Draw line within fractal - called when "F" is the current string character
  * @param cp
@@ -36,12 +62,6 @@ function processFractalRule(canvas, currentPoint, stashPoint, rule, fractalPrope
             case'-':
                 rotatePointDirection(false, fractalProperties.angle, currentPoint);
                 break;
-            case '[':
-                setPointFromPoint(stashPoint, currentPoint.x, currentPoint.y, currentPoint.degrees);
-                break;
-            case ']':
-                setPointFromPoint(currentPoint, stashPoint.x, stashPoint.y, stashPoint.degrees);
-                break;
         }
     }
 }
@@ -62,11 +82,7 @@ function drawCustomFractal() {
         minus: lSystemLanguage[2],
     }
 
-    const currentPoint = {
-        'x': canvas.width / 2,
-        'y': canvas.height,
-        'degrees': 0
-    }
+    const currentPoint = fractalCurrentPoint;
     const stashPoint = currentPoint;
 
     for (let i = 0; i < fractalProperties.iterations; i++) {

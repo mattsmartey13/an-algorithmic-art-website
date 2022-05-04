@@ -1,41 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<body onload="drawMandala(mandalaPoints.value, mandalaLineColor.value)">
-<h1>Mandala</h1>
-<p>
-    Mandala is the Sanskrit word for "circle", however in art it is referred to a geometric collection of shapes to form a gorgeous
-    <br>
-    set of patterns. The mandala traces its origins from Hindu and Buddhist texts and has uses such as a reference point for the individual to center their
-    <br>
-    spirit not only in the process of mediation, but as a means of living their life free from negative energy. Mandalas are also used
-    <br>
-    to display the endless process of life, death and rebirth on the outside, with usually the image of a deity or other universal realms in the centre.
-    <br>
-    Today, mandalas are commonly associated with Western New Age culture and can be observed in architecture. The "dotwork" style of tattooing uses the foundation of the Mandala
-    <br>
-    outside and inside section to create a symmetrical or semi-symmetrical pattern of circles and shapes, which are meant to represent peace and balance.
-</p>
-<p>
-    The Mandala is the first piece of artwork I have attempted to recreate. I have chosen the mandala due to my fascination with geometric patterns, and
-    <br>
-    its meaning in my life as I am a practitioning Buddhist. Below, the user has the opportunity to use a scroll to add or subtract points of contact on
-    <br>
-    the canvas to simplify or add further complexity to the Mandala. The user is also free to animate the mandala and to change the color  of the lines.
-    <br>
-</p>
-<hr>
-<label for='mandalaPoints'>Number of points: </label>
-<input type='range' min='20' max='40' id='mandalaPoints'
-       value='20'
-       onchange="drawMandala(mandalaPoints.value, mandalaLineColor.value)"
-/>
-<label for='mandalaLineColor'>Line colour: </label>
-<input type='color' id='mandalaLineColor'
-       oninput="drawMandala(mandalaPoints.value, mandalaLineColor.value)"
-/>
-<button name="playMandala" id="playMandala"
-        onclick="animateMandala()">Animate</button>
-<br>
-<canvas id='mandalaCanvas' width='400' height='400'></canvas>
+<body>
+<h1 class="page-header">Mandala</h1>
+<section class="page-content">
+    <p class="page-description">
+        Mandala is the Sanskrit word for "circle", however in art it is referred to a geometric collection of shapes to
+        form
+        a gorgeous
+        set of patterns. The mandala traces its origins from Hindu and Buddhist texts and has uses such as a reference
+        point
+        for the individual to center their
+        spirit not only in the process of mediation, but as a means of living their life free from negative energy.
+        Mandalas
+        are also used
+        to display the endless process of life, death and rebirth on the outside, with usually the image of a deity or
+        other
+        universal realms in the centre.
+        Today, mandalas are commonly associated with Western New Age culture and can be observed in architecture. The
+        "dotwork" style of tattooing uses the foundation of the Mandala
+        outside and inside section to create a symmetrical or semi-symmetrical pattern of circles and shapes, which are
+        meant to represent peace and balance.
+        The Mandala is the first piece of artwork I have attempted to recreate. I have chosen the mandala due to my
+        fascination with geometric patterns, and
+        its meaning in my life as I am a practitioner Buddhist. Below, the user has the opportunity to use a scroll to
+        add
+        or subtract points of contact on
+        the canvas to simplify or add further complexity to the Mandala. The user is also free to animate the mandala
+        and to
+        change the color of the lines.
+    </p>
+</section>
+<div class="artwork-inputs">
+    <label for='mandalaPoints'>Number of points: </label>
+    <input type='range' min='20' max='40' id='mandalaPoints'
+           value='20'
+           onchange="drawMandala()"
+    />
+    <label for='mandalaLineColor'>Line colour: </label>
+    <input type='color' id='mandalaLineColor'
+           oninput="drawMandala()"
+    />
+    <button name="playMandala" id="playMandala"
+            onclick="animateMandala()">Animate
+    </button>
+</div>
+<div class="canvas-container">
+    <canvas id='mandalaCanvas' width='400' height='400'></canvas>
+</div>
 </body>
 </html>

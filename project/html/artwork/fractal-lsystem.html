@@ -1,88 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
 <body>
-<h1>Custom fractal writer</h1>
-<p>
-    As my first bespoke piece, I have given the user the opportunity to create their own fractal patterns using a rule
-    builder.
-    <br>
-    To begin, please define two rules in terms of F, +, -, [ and ].
-    <br>
-    The alphabet for this system goes as follows:
-    <br>
-</p>
-<ul>
-    <li>F: This will draw a line going in the direction assigned.</li>
-    <li>+: This will turn the pointer clockwise by the number of degrees assigned.</li>
-    <li>-: This will turn the pointer anticlockwise by the direction assigned</li>
-    <li>[: This will save the current point, this is useful for creating branched fractals</li>
-    <li>]: This will restore the point back to where it was saved after calling [</li>
-</ul>
-<p>
-    Note that each iteration will decrease the line length and width by 20%.
-    See below for examples:
-</p>
-<table>
-    <tr>
-        <td>Algorithm name</td>
-        <td>Rule A</td>
-        <td>Rule B</td>
-        <td>Axiom</td>
-        <td>A will be followed by</td>
-        <td>B will be followed by</td>
-        <td>Starting angle</td>
-        <td>Rotational angle</td>
-        <td>Iterations</td>
-        <td>Line length</td>
-        <td>Multiplier</td>
-    </tr>
-    <tr>
-        <td>One</td>
-        <td>F[++FF-F]--FF</td>
-        <td>FFF--F[F--FF+F]+FF</td>
-        <td>A</td>
-        <td>ABAAB</td>
-        <td>BBABA</td>
-        <td>60</td>
-        <td>60</td>
-        <td>3</td>
-        <td>20</td>
-        <td>1</td>
-    </tr>
-</table>
-<p>
-    <br>
-    <b><u>RULES:</u></b>
-    <br>
-</p>
-<ul>
-    <li>No blank fields!</li>
-    <li>The program will not draw if you haven't clicked on the canvas and set a point.</li>
-    <li>The program will not draw if you haven't selected an axiom to start off the drawing.</li>
-    <li>The program will not draw if you are not following the alphabet in the rules.</li>
-    <li>The program will not draw if your recursive calls include characters other than A or B.</li>
-    <li><b>Please note the algorithm is case-sensitive and will not take on f's, a's or b's.</b></li>
-</ul>
-<hr>
-<label for="axiom">Axiom in terms of F, +, - </label>
-<input id="axiom" name="axiom" value="F-F-F-F-F" type="text" onchange="drawCustomFractal()"/>
-<br>
-<label for="production">Production rule F in terms of F, +, -, [, ]</label>
-<input id="production" name="production" value="F-F-F++F+F-F" type="text" onchange="drawCustomFractal()"/>
-<br>
-<br>
-<label for="lineLength">Line length: </label>
-<input id="lineLength" name="lineLength" value="66" type="range" min="25" max="75" oninput="drawCustomFractal()"/>
-<br>
-<label for="angle">Rotation angle: </label>
-<input id="angle" name="angle" value="72" min="0" max="180" type="number" onchange="drawCustomFractal()"/>
-<br>
-<label for="iterations">Number of iterations</label>
-<input id="iterations" type="range" name="iterations" min="1" max="5" value="1" onchange="drawCustomFractal()"/>
-<br>
-<canvas id='fractalLSystemCanvas'
-        width="1200" height="800"
-        style="border:1px solid #000000">
-</canvas>
+<h1 class="page-header">Custom fractal writer</h1>
+<section class="page-content">
+    <p class="page-description">
+        As my first bespoke piece, I have given the user the opportunity to create their own fractal patterns using a
+        rule
+        builder.
+        The user is prompted to enter an axiom and a production rule.
+        Although very similar, there are two alphabets to consider:
+    </p>
+    <h2>Axiom alphabet</h2>
+    <ul class="page-list">
+        <li class="list-element"> F : This will be substituted for the production string.</li>
+        <li class="list-element"> + : This will turn the pointer clockwise by the number of degrees assigned.</li>
+        <li class="list-element"> - : This will turn the pointer anticlockwise by the direction assigned.</li>
+    </ul>
+    <h2>Production alphabet</h2>
+    <ul class="page-list">
+        <li class="list-element"> F : This will draw a line going in the direction assigned.</li>
+        <li class="list-element"> + : This will turn the pointer clockwise by the number of degrees assigned.</li>
+        <li class="list-element"> - : This will turn the pointer anticlockwise by the direction assigned.</li>
+    </ul>
+    <p class="page-description">
+        For example, with an axiom of F-F+F and a production rule of FF-F+F-F+F, every F in the axiom will be substituted for the production rule.
+    </p>
+    <h2>Examples</h2>
+    <table id="fractal-examples">
+        <tr>
+            <td>Algorithm name</td>
+            <td>Axiom</td>
+            <td>Production</td>
+            <td>Rotational angle</td>
+        </tr>
+        <tr>
+            <td>Pentadendrite</td>
+            <td>F-F-F-F-F</td>
+            <td>F-F-F++F+F-F</td>
+            <td>72</td>
+        </tr>
+        <tr>
+            <td>Icy fractal</td>
+            <td>F+F+F+F</td>
+            <td>FF+F++F+F</td>
+            <td>90</td>
+        </tr>
+        <tr>
+            <td>Koch curve</td>
+            <td>F</td>
+            <td>F+F--F+F</td>
+            <td>80</td>
+        </tr>
+    </table>
+    <p class="page-description">
+        <b><u>RULES:</u></b>
+    </p>
+    <ul class="page-list">
+        <li class="list-element">Spaces in the axiom and production strings are not compiled</li>
+        <li class="list-element">Only the F, + and - symbols are interpreted</li>
+        <li class="list-element">If the canvas isn't clicked, it will default to the top corner</li>
+    </ul>
+    <hr>
+</section>
+<div class="artwork-inputs">
+    <label class="artwork-input-label" for="axiom">Axiom in terms of F, +, - </label>
+    <input id="axiom" name="axiom" value="F-F-F-F-F" type="text" onchange="drawCustomFractal()"/>
+    <label class="artwork-input-label" for="production">Production rule F in terms of F, +, -, [, ]</label>
+    <input id="production" name="production" value="F-F-F++F+F-F" type="text" onchange="drawCustomFractal()"/>
+    <label class="artwork-input-label" for="lineLength">Line length: </label>
+    <input id="lineLength" name="lineLength" value="66" type="range" min="25" max="300" oninput="drawCustomFractal()"/>
+    <label class="artwork-input-label" for="angle">Rotation angle: </label>
+    <input id="angle" name="angle" value="72" min="0" max="180" type="number" onchange="drawCustomFractal()"/>
+    <label class="artwork-input-label" for="iterations">Number of iterations</label>
+    <input id="iterations" type="range" name="iterations" min="1" max="5" value="1" onchange="drawCustomFractal()"/>
+</div>
+<div class="artwork-text">
+    <p>
+        Mouse position
+        <label id="fractalMouseX"></label>
+        <label id="fractalMouseY"></label>
+    </p>
+    <p>
+        Mouse float
+        <label id="fractalMouseFloatX"></label>
+        <label id="fractalMouseFloatY"></label>
+    </p>
+</div>
+<div class="canvas-container">
+    <canvas id='fractalLSystemCanvas'
+            width="1200" height="800"
+            onmousemove="onFractalMouseOver(event)" onmousedown="onFractalMouseClick(event)">
+    </canvas>
+</div>
 </body>
-</html>
