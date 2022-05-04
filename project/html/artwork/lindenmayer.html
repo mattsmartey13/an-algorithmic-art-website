@@ -1,22 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<body onload="drawLindenmayer(400, 500, 100, 0, 10)">
-<h1>Lindenmayer tree</h1>
-<p>
+<body>
+<h1 class="page-header">Lindenmayer tree</h1>
+<section class="page-content">
+    <p class="page-description">
         L-systems are a type of algorithm used to create complex shapes and patterns using a simple "alphabet" ruleset.
-        <br>
-        This was proposed by biologist Aristid Lindenmayer to explain the nature of plants and their algorithmic beauty.
-        <br>
+        This was proposed by biologist Aristid Lindenmayer to explain the nature of plant and cell growth.
         Computer scientists have taken his ideas to explain the creation of formal languages using a finite alphabet.
-        <br>
-</p>
-<p>
-        Below you will see my inspiration for my focus on L-systems in this project.
-</p>
-<hr>
-<button id="lindenmayer1drawbtn" name="lindenmayer1drawbtn" onclick="drawLindenmayer(400, 500, 100, 0, 10)">Draw tree</button>
-<br>
-<canvas id="lindenmayer1canvas" width="1000" height="600"></canvas>
-<script src="../../js/artwork/lindenmayer.js"></script>
+    </p>
+    <p class="page-description">
+        Plainly speaking, the structure of this particular L-system tree is to draw a line and then split into two. The
+        splitting into
+        two branches is a recursive mechanism: while there is a specific condition in place (in this instance, the line
+        length is above 15),
+        the function will call itself over and over again (draw a line, mark the end coordinate of the line, split into
+        two, shrink the line length).
+        Once the line length is equal to or below 15, the branching mechanism will stop and the pink leaves will be
+        created.
+    </p>
+    <p class="page-description">
+        The "self-similarity" of L-systems is most apparent when looking at a tree. The branch is just a smaller version
+        of a tree.
+        To look at it on an even smaller scale, we can see there is a branching mechanism in a stem where leaves spawn,
+        and even in the leaf vein structure.
+    </p>
+    <button id="lSystemTreeDrawBtn" onclick="drawLindenmayer(400, 500, 100, 0, 10)">Draw tree</button>
+</section>
+<div class="canvas-container">
+    <canvas id="lSystemTreeCanvas" width="1000" height="600"></canvas>
+</div>
 </body>
 </html>

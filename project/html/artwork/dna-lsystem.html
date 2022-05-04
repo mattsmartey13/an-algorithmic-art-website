@@ -1,51 +1,93 @@
 <body>
-<h1>L-System DNA double helix</h1>
-<section class="artpiece-description">
-    <p>
-        The work Aristid Lindenmayer conducted on plant biology inspired me further. Following the creation of the
-        L-system garden, I found evidence of the existence of L-systems in the construction of proteins and DNA from
-        nucleotides.
-        The user is prompted with fewer inputs, however the artwork has a more "show your working" feel to demonstrate
-        the existence of the L-system.
-        This has a similar mechanism to the Custom Fractal Builder, however each nucleotide base will only call two
-        others.
+<h1 class="page-header">L-System DNA</h1>
+<section class="page-content">
+    <p class="page-description">
+        We are now able using modern science to 3d print DNA, a new technique which has been used to develop the COVID-19 vaccine.
+        The question beggars: what combination of DNA nucleotide bases equates to what? Once you open with many A's and C's for instance,
+        will that head towards a specific type of protein? Or is there some kind of production rule?
+        This inspired me further to see if I could generate my own DNA double helix using L-system production rules.
+    </p>
+    <p class="page-description">
+        This does not contain an axiom and production rule, but a mechanism that will allow bases to be called on following each base insertion.
+        Using the ATGC language, you can specify which bases are to be called out following the insertion of a base. The iteration mechanism will
+        allow you to generate a hefty string. This will cause the backbone and nucleotide bases to shrink, and the DNA strand will continue below.
+        Once the strand hits the end of the page, it will go down one level and then continue in the reverse direction:
+    </p>
+    <ul class="page-list">
+        <li class="list-element">Right -> Left</li>
+        <li class="list-element">Left <- Right</li>
+    </ul>
+    <p class="page-description">
+        And so forth. This piece was fascinating to create because I devised its development process like the making of a protein.
+        Proteins have primary, secondary, tertiary and quaternary structures:
+    </p>
+    <dl class="page-list">
+        <dt class="list-element">Primary</dt>
+        <dd class="list-element">The chain of amino acids bonded to one another</dd>
+        <dt class="list-element">Secondary</dt>
+        <dd class="list-element">Individual chains of amino acids bonded by hydrogen bonds between one another</dd>
+        <dt class="list-element">Tertiary</dt>
+        <dd class="list-element">A large amalgamation of hydrogen and ionic bonds will give the protein its 3D structure</dd>
+        <dt class="list-element">Quaternary</dt>
+        <dd class="list-element">Multiple tertiary structure proteins joining one another to form a larger unit</dd>
+    </dl>
+    <p class="page-description">
+        I have used this as a methodology to develop the DNA by breaking it into stages.
+    </p>
+    <dl class="page-list">
+        <dt class="list-element">Primary</dt>
+        <dd class="list-element">Create methods to draw the backbone and nucleotide bonds using coloured lines and bezier curves</dd>
+        <dt class="list-element">Secondary</dt>
+        <dd class="list-element">Use this to draw a single helix with a number of nucleotides</dd>
+        <dt class="list-element">Tertiary</dt>
+        <dd class="list-element">With enough iterations, can we fill the canvas width with a strand of DNA?</dd>
+        <dt class="list-element">Quaternary</dt>
+        <dd class="list-element">Create a method to bounce the helix on a lower level to give the appearance of bonding between strands.</dd>
+    </dl>
+    <p class="page-description">
+        In terms of ATGC, which bases are called following a base being added into the helix?
+        Start with an axiom using a single nucleotide base, the iteration system will concatenate a single DNA strand based on the iteration system.
+        A second strand will then be constructed based on the matching nucleotide.
+        For best results, input 2-4 bases.
     </p>
 </section>
-<div id="lSystemDNAInputs">
-    <div id="lSystemDNABaseGrid">
-        <label for="lSystemDNAAdenine">Adenine base colour</label>
-        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAAdenine" value="#007fff" onchange="drawDoubleHelix(dnaData)"/>
-        <label for="lSystemDNAThymine">Thymine base colour</label>
-        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAThymine" value="#F7CC43" onchange="drawDoubleHelix(dnaData)">
-        <label for="lSystemDNAGuanine">Guanine base colour</label>
-        <input type="color" class="lSystemDNABaseColours" id="lSystemDNAGuanine" value="#00ff00" onchange="drawDoubleHelix(dnaData)"/>
-        <label for="lSystemDNACytosine">Cytosine base colour</label>
-        <input type="color" class="lSystemDNABaseColours" id="lSystemDNACytosine" value="#ff0040" onchange="drawDoubleHelix(dnaData)"/>
+<div id="dna">
+<div class="artwork-inputs" id="artwork-dna">
+    <div id="dna-bases" class="dna-div">
+        <label class="dna-label" for="lSystemDNAAdenine">Adenine base colour</label>
+        <input type="color" class="dna-input" id="lSystemDNAAdenine" value="#007fff" onchange="drawDoubleHelix()"/>
+        <label class="dna-label" for="lSystemDNAThymine">Thymine base colour</label>
+        <input type="color" class="dna-input" id="lSystemDNAThymine" value="#F7CC43" onchange="drawDoubleHelix()">
+        <label class="dna-label" for="lSystemDNAGuanine">Guanine base colour</label>
+        <input type="color" class="dna-input" id="lSystemDNAGuanine" value="#00ff00" onchange="drawDoubleHelix()"/>
+        <label class="dna-label" for="lSystemDNACytosine">Cytosine base colour</label>
+        <input type="color" class="dna-input" id="lSystemDNACytosine" value="#ff0040" onchange="drawDoubleHelix()"/>
+        <label class="dna-label" for="lSystemDNABackboneColour">Cytosine base colour</label>
+        <input type="color" class="dna-input" id="lSystemDNABackboneColour" value="#0000cd" onchange="drawDoubleHelix()"/>
     </div>
-    <div id="lSystemDNARecursionGrid">
-        <p>
-            In terms of ATGC, which bases are called following a base being added into the helix?
-            Start with an axiom using a single nucleotide base, the iteration system will concatenate a single DNA strand based on the iteration system.
-            A second strand will then be constructed based on the matching nucleotide.
-            For best results, input 2-4 bases.
-        </p>
-        <label for="lSystemDNAAxiom">Axiom</label>
-        <input type="text" id="lSystemDNAAxiom" value="A" onchange="drawDoubleHelix(dnaData)">
-        <label for="lSystemDNAAdenineRec">A =</label>
-        <input type="text" id="lSystemDNAAdenineRec" value="GAC" onchange="drawDoubleHelix(dnaData)">
-        <label for="lSystemDNAGuanineRec">G = </label>
-        <input type="text" id="lSystemDNAGuanineRec" value="TAA" onchange="drawDoubleHelix(dnaData)">
-        <label for="lSystemDNAThymineRec">T = </label>
-        <input type="text" id="lSystemDNAThymineRec" value="CCG" onchange="drawDoubleHelix(dnaData)">
-        <label for="lSystemDNACytosineRec">C = </label>
-        <input type="text" id="lSystemDNACytosineRec" value="TCA" onchange="drawDoubleHelix(dnaData)">
+    <div id="dna-recursion" class="dna-div">
+        <label class="dna-label" for="lSystemDNAAxiom">Axiom</label>
+        <input type="text" class="dna-input" id="lSystemDNAAxiom" value="A" onchange="drawDoubleHelix()">
+        <label class="dna-label" for="lSystemDNAAdenineRec">A =</label>
+        <input type="text" class="dna-input" id="lSystemDNAAdenineRec" value="GAC" onchange="drawDoubleHelix()">
+        <label class="dna-label" for="lSystemDNAGuanineRec">G = </label>
+        <input type="text" class="dna-input" id="lSystemDNAGuanineRec" value="TAA" onchange="drawDoubleHelix()">
+        <label class="dna-label" for="lSystemDNAThymineRec">T = </label>
+        <input type="text" class="dna-input" id="lSystemDNAThymineRec" value="CCG" onchange="drawDoubleHelix()">
+        <label class="dna-label" for="lSystemDNACytosineRec">C = </label>
+        <input type="text" class="dna-input" id="lSystemDNACytosineRec" value="TCA" onchange="drawDoubleHelix()">
     </div>
-    <div>
-        <label for="lSystemDNABasePairs">Number of base pairs per section</label>
-        <input type="range" id="lSystemDNABasePairs" min="2" value="3" max="5" onchange="drawDoubleHelix(dnaData)">
-        <label for="lSystemDNAIterations">Number of iterations 1-4</label>
-        <input type="range" id="lSystemDNAIterations" min="1" max="8" value="2" onchange="drawDoubleHelix(dnaData)">
+    <div id="dna-inputs" class="dna-div">
+        <label class="dna-label" for="lSystemDNABasePairs">Number of base pairs per section</label>
+        <input type="range" class="dna-input" id="lSystemDNABasePairs" min="2" value="3" max="5" onchange="drawDoubleHelix()">
+        <label class="dna-label" for="lSystemDNAIterations">Number of iterations 1-4</label>
+        <input type="range" class="dna-input" id="lSystemDNAIterations" min="1" max="8" value="2" onchange="drawDoubleHelix()">
+        <label class="dna-label" for="lSystemDNALineWidth">Line width</label>
+        <input type="range" class="dna-input" id="lSystemDNALineWidth" min="1" max="10" value="1" onchange="drawDoubleHelix()">
     </div>
 </div>
-<canvas id="lSystemDNACanvas" width="1000" height="600" style="border:1px solid #000000"></canvas>
+<div class="canvas-container">
+    <canvas id="lSystemDNACanvas" width="1000" height="600"></canvas>
+</div>
+</div>
 </body>

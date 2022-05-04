@@ -1,46 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Garden of L-systems</title>
-</head>
 <body>
-<h1>Garden of L-systems</h1>
-<section id="garden-description">
-    <p>
-        For my second art piece, I have used my research into L-system and inspiration from Aristid Lindenmayer's "The Algorithmic Beauty of Plants" to allow the user to create a garden from L-system algorithms.
-        The user has no input on the L-system language, so each garden piece is randomly generated. The user however has the choice of placement, so following the selection of a type (cloud, tree etc), once the user has the canvas set up and clicks on the canvas, the plant life will be generated there.
-        Each tree, flower and blade of grass will be different yet exhibit self-similarity.
+<h1 class="page-header">Garden of L-systems</h1>
+<section class="page-content">
+    <p class="page-description">
+        For my second art piece, I have drawn inspiration from "The Algorithmic Beauty of Plants" to allow the user to
+        create a garden from L-system algorithms.
+        Unlike the fractal builder where the user is free to play with the algorithm, here the user cannot input on the
+        L-system language, and is only permitted to choose the type of entity to draw.
+    </p>
+    <p class="page-description">
+        As the user does not have any input on the algorithm, I have devised an L-system constructor that will generate
+        a string semi-randomly. For
+        entities such as the tree, you might be given a tree with no branches or a tree with multiple. It might be
+        straight, it might curve or even collapse to the ground.
+        The cloud might be circular or more linear.
+    </p>
+    <p class="page-description">
+        To draw, establish the soil and grass layer, then select a type below and left-click on the canvas where you
+        want to draw it. This will be the coordinate for the
+        bottom of the trunk/stem. For clouds, this will be the leftmost point of where you want your cloud to be.
+        Note that after resetting the canvas, you do not need to reestablish the soil layer again.
     </p>
 </section>
-<button id="gardenSetupButton" name="gardenSetupButton" onmousedown="gardenSetup()">Setup soil and grass layers</button>
-<button id="typeTree" name="gardenTypeButton" onclick="setPlantProperties(names.tree)">Set type to tree</button>
-<button id="typeShoot" name="gardenTypeButton" onclick="setPlantProperties(names.shoot)">Set type to shoot</button>
-<button id="typeFlower" name="gardenTypeButton" onclick="setPlantProperties(names.flower)">Set type to flower</button>
-<button id="typeCloud" name="gardenTypeButton" onclick="setPlantProperties(names.cloud)">Set type to cloud</button>
-<button id="typeGrass" name="gardenTypeButton" onclick="setPlantProperties(names.grass)">Set type to grass</button>
-<button id="gardenClearCanvasButton" name="gardenClearCanvasButton" onclick="resetGardenCanvas()">Clear canvas</button>
-<br>
-<p>
-    Mouse position
-    <label id="gardenMouseX"></label>
-    <label id="gardenMouseY"></label>
-</p>
-<br>
-<p>
-    Mouse float
-    <label id="gardenMouseFloatX"></label>
-    <label id="gardenMouseFloatY"></label>
-</p>
-<h4>Current type is:</h4>
-<p id="gardenTypeOutput"></p>
-<canvas id="gardenCanvas"
-            width="1200"
-            height="600"
-            style="border:1px solid #000000"
-            onmousemove="gardenCanvasOnMouseOver(event)"
-            onmousedown="gardenCanvasOnClick(event)">
-</canvas>
-<br>
+<div id="artwork-text">
+    <p>
+        Mouse position
+        <label id="gardenMouseX"></label>
+        <label id="gardenMouseY"></label>
+    </p>
+    <p>
+        Mouse float
+        <label id="gardenMouseFloatX"></label>
+        <label id="gardenMouseFloatY"></label>
+    </p>
+    <h4>Current type is:</h4>
+    <p id="gardenTypeOutput"></p>
+</div>
+<div id="artwork-garden">
+    <div class="artwork-inputs" id="artwork-inputs-garden">
+        <button id="gardenSetupButton" class="gardenTypeButton" onmousedown="gardenSetup()">Setup soil and grass layers
+        </button>
+        <button id="typeTree" class="gardenTypeButton" onclick="setPlantProperties(names.tree)">Set type to tree</button>
+        <button id="typeShoot" class="gardenTypeButton" onclick="setPlantProperties(names.shoot)">Set type to shoot
+        </button>
+        <button id="typeFlower" class="gardenTypeButton" onclick="setPlantProperties(names.flower)">Set type to flower
+        </button>
+        <button id="typeCloud" class="gardenTypeButton" onclick="setPlantProperties(names.cloud)">Set type to cloud
+        </button>
+        <button id="typeGrass" class="gardenTypeButton" onclick="setPlantProperties(names.grass)">Set type to grass
+        </button>
+        <button id="gardenClearCanvasButton" class="gardenTypeButton" onclick="resetGardenCanvas()">Clear canvas
+        </button>
+    </div>
+    <div class="canvas-container">
+        <canvas id="gardenCanvas"
+                width="1200"
+                height="600"
+                onmousemove="gardenCanvasOnMouseOver(event)"
+                onmousedown="gardenCanvasOnClick(event)">
+        </canvas>
+    </div>
+</div>
 </body>
 </html>

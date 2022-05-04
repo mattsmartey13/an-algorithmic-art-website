@@ -1,18 +1,30 @@
-let forward;
-
+/**
+ * Delay function used as part of the mandala drawing at set time intervals
+ * @param milliseconds
+ * @returns {Promise<unknown>}
+ */
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
+/**
+ * Hardcoded half a second so the main function doesn't have to be async
+ * @returns {Promise<void>}
+ */
 async function preAnimationDelay() {
     await sleep(500);
 }
 
-function drawMandala(point_count, line_color) {
+/**
+ * Take number of points and use trigonometry to plot them on the canvas, then connect every point to one another
+ */
+function drawMandala() {
     const canvas = document.getElementById('mandalaCanvas');
     const context = canvas.getContext('2d');
     const radius = canvas.width / 2;
     const points = [];
+    const point_count = $("#mandalaPoints").val();
+    const line_color = $("#mandalaLineColor").val();
 
     for (let i = 0; i <= point_count; i++) {
         const angle = i * 2 * Math.PI / point_count - Math.PI / 2;
@@ -39,16 +51,19 @@ function drawMandala(point_count, line_color) {
     }
 }
 
+/**
+ * Use the preAnimationDelay() and drawMandala() methods to increment/decrement the number of points,
+ * and redraw the mandala every half a second to create "pulsing" effect.
+ */
 function animateMandala() {
-    let point_count = document.getElementById('mandalaPoints');
-    let line_color = document.getElementById('mandalaLineColor');
-    let playBtn = document.getElementById('playMandala');
+    const point_count = document.getElementById('mandalaPoints');
+    const line_color = document.getElementById('mandalaLineColor');
+    const playBtn = document.getElementById('playMandala');
+    const forward = point_count.value < point_count.max;
 
     playBtn.setAttribute('disabled', 'disabled');
     point_count.setAttribute('disabled', 'disabled');
     line_color.setAttribute('disabled', 'disabled');
-
-    forward = point_count.value < point_count.max;
 
     if (forward) {
         preAnimationDelay().then(async () => {

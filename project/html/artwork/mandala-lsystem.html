@@ -1,35 +1,51 @@
 <body>
-<h1>L-System Mandala</h1>
-<section class="artpiece-description">
-    <p>
+<h1 class="page-header">L-System Mandala</h1>
+<section class="page-content">
+    <p class="page-description">
         Using the L system language of this project, you can now construct a Mandala.
-        The mandala piece in the preface section utilised a different and more simple algorithm: the program would simply plot the range of specified points on the canvas using a set of trigonometry rules, and then draw a line from each point to the other points.
-        This piece however will utilise L systems that originate from the centre of the canvas and traverse in all 360 degrees, before being called recursively at the finishing point of each drawn L-system.
+        The mandala piece in the preface section utilised a different and more simple algorithm: the program would
+        simply plot the range of specified points on the canvas using a set of trigonometry rules, and then draw a line
+        from each point to the other points.
     </p>
 </section>
-    <label for="lSystemMandalaLineColour">Line colour</label>
-    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaLineColour" value="#000000" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)"/>
-    <label for="lSystemMandalaColour1">Gradient colour 1</label>
-    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour1" value="#801171" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)"/>
-    <label for="lSystemMandalaColour2">Gradient colour 2</label>
-    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour2" value="#f1ff36" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">
-    <label for="lSystemMandalaLineLength">Line length</label>
-    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaLineLength" value="10" min="3" max="15" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">
-    <label for="lSystemMandalaLineWidth">Line width</label>
-    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaLineWidth" value="1" min="0.1" max="5" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">
-    <label for="lSystemMandalaCircleRadius">Starting circle radius</label>
-    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaCircleRadius" value="20" min="10" max="30" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">
-    <label for="lSystemMandalaSpawns">Number of branches spawning from center circle</label>
-    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaSpawns" value="20" min="0" max="40" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">
-    <label for="lSystemMandalaMainStringLength">String length on main branches</label>
-    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaMainStringLength" value="20" min="10" max="30" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">
-    <label for="lSystemMandalaBranchLength">String length on side branches</label>
-    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaBranchLength" value="8" min="4" max="12" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">
-    <label for="lSystemMandalaBranchNumber">Number of side branches off a main branch</label>
-    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaBranchNumber" value="12" min="8" max="20" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">
-    <label for="lSystemMandalaRange">Number of layers</label>
-    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaRange" value="2" min="1" max="10" onchange="drawLSystemMandala(mandalaCurrentPoint, mandalaStashPoint, mandalaData)">
-    <br>
-    <br>
-    <canvas id="mandalaLSystemCanvas" width="1000" height="600" style="border:1px solid #000000"></canvas>
+<div id="artwork-lsystem-mandala">
+<div class="artwork-inputs">
+    <label class="artwork-input-label" for="lSystemMandalaLineColour">L-system line colour</label>
+    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaLineColour" value="#000000"
+           onchange="drawLSystemMandala()"/>
+    <label class="artwork-input-label" for="lSystemMandalaColour1">Gradient colour 1</label>
+    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour1" value="#801171"
+           onchange="drawLSystemMandala()"/>
+    <label class="artwork-input-label" for="lSystemMandalaColour2">Gradient colour 2</label>
+    <input type="color" class="lSystemMandalaColour" id="lSystemMandalaColour2" value="#f1ff36"
+           onchange="drawLSystemMandala()">
+    <label class="artwork-input-label" for="lSystemMandalaLineLength">General line width</label>
+    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaLineLength" value="10" min="3" max="15"
+           onchange="drawLSystemMandala()">
+    <label class="artwork-input-label" for="lSystemMandalaLineWidth">General line length</label>
+    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaLineWidth" value="1" min="0.1" max="5"
+           onchange="drawLSystemMandala()">
+    <label class="artwork-input-label" for="lSystemMandalaCircleRadius">Starting circle radius</label>
+    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaCircleRadius" value="20" min="10" max="30"
+           onchange="drawLSystemMandala()">
+    <label class="artwork-input-label" for="lSystemMandalaSpawns">Number of endpoints</label>
+    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaSpawns" value="20" min="0" max="40"
+           onchange="drawLSystemMandala()">
+    <label class="artwork-input-label" for="lSystemMandalaMainStringLength">Length of line to endpoints</label>
+    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaMainStringLength" value="20" min="10"
+           max="30" onchange="drawLSystemMandala()">
+    <label class="artwork-input-label" for="lSystemMandalaBranchLength">Length of L-systems off main lines</label>
+    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaBranchLength" value="8" min="4" max="12"
+           onchange="drawLSystemMandala()">
+    <label class="artwork-input-label" for="lSystemMandalaBranchNumber">Number of L-systems off main lines</label>
+    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaBranchNumber" value="12" min="8" max="20"
+           onchange="drawLSystemMandala()">
+    <label class="artwork-input-label" for="lSystemMandalaRange">Number of endpoint layers</label>
+    <input type="range" class="lSystemMandalaDimensions" id="lSystemMandalaRange" value="2" min="1" max="10"
+           onchange="drawLSystemMandala()">
+</div>
+<div class="canvas-container">
+    <canvas id="mandalaLSystemCanvas" width="1000" height="600"></canvas>
+</div>
+</div>
 </body>

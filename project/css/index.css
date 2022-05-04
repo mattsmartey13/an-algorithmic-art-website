@@ -1,15 +1,43 @@
 body {
     --nav-width: 15%;
     margin: 0 0 0 var(--nav-width);
-    padding-left: 15px;
+    padding-left: 1rem;
+    padding-right: 1rem;
     font-family: Arial, serif;
-    font-size: 15px;
+    font-size: 20px;
+}
+
+p, li, dd, dt, label, td {
+    font-size: 1rem;
+}
+
+.list-element, .page-list, .page-description{
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+}
+
+.list-element {
+    margin: 1rem;
+    list-style: circle;
+}
+
+.page-description {
+    line-height: 1.5rem;
 }
 
 ul {
     list-style-type: none;
     margin: 0;
-    padding: 0
+    padding: 0;
+}
+
+li, dt {
+    font-weight: bolder;
+}
+
+dd {
+    font-style: italic;
+    font-weight: normal;
 }
 
 .navigation {
@@ -25,9 +53,8 @@ ul {
 .navigation__link {
     display: block;
     list-style-type: circle;
-    padding: 10px;
+    padding: 1rem;
     color: darkblue;
-    font-weight: bolder;
 }
 
 .navigation__link:hover {
@@ -39,6 +66,152 @@ ul {
     color: white;
 }
 
-table, th, td {
+#gardenCanvas, #fractalLSystemCanvas {
+    width: 100%;
+    max-height: 1200px;
+}
+
+.artwork-inputs {
+    width: auto;
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 1rem;
+    background-color: cornflowerblue;
+    justify-content: space-around;
+    justify-items: left;
+    grid-auto-rows: auto;
+    grid-auto-columns: auto;
+}
+
+#dna-bases, #dna-recursion, #dna-inputs {
+    display: grid;
+    gap: 1rem;
+}
+
+.artwork-input-label, .dna-label {
+    color: darkblue;
+    font-weight: bolder;
+}
+
+.dna-label {
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+.dna-input {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+#artwork-garden {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+#dna {
+    display: grid;
+    gap: 1rem;
+}
+
+#artwork-lsystem-mandala {
+    display: grid;
+    width: auto;
+    grid-template-rows: auto auto;
+    gap: 1rem;
+}
+
+#artwork-dna {
+    display: flex;
+    width: auto;
+    grid-template-columns: auto auto auto;
+    gap: 1rem;
+}
+
+#artwork-inputs-garden {
+    flex: 20%;
+    display: grid;
+    grid-template-areas:
+    'soil tree'
+    'shoot flower'
+    'cloud grass'
+    'reset reset';
+    gap: 0.5rem;
+}
+
+.gardenTypeButton {
+    height: auto;
+}
+
+#gardenCanvas {
+    flex: 80%;
+}
+
+#gardenSetupButton {
+    grid-area: soil;
+}
+
+#typeTree {
+    grid-area: tree;
+}
+
+#typeShoot {
+    grid-area: shoot;
+}
+
+#typeFlower {
+    grid-area: flower;
+}
+
+#typeCloud {
+    grid-area: cloud;
+}
+
+#typeGrass {
+    grid-area: grass;
+}
+
+#gardenClearCanvasButton {
+    grid-area: reset;
+}
+
+.canvas-container {
+    text-align: center;
+}
+
+canvas {
+    display: inline;
+}
+
+table, th, td, #gardenCanvas, #fractalLSystemCanvas, #mandalaLSystemCanvas, #lSystemDNACanvas {
     border: 1px solid black;
 }
+
+.gallery {
+    border: 1px solid #ccc;
+}
+
+.gallery:hover {
+    border: 1px solid #777;
+}
+
+.gallery img {
+    width: 100%;
+    height: auto;
+}
+
+.gallery-description {
+    padding: 15px;
+    text-align: center;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.artwork-image {
+    padding: 0 6px;
+    float: left;
+    width: 24.99999%;
+}
+

@@ -1,29 +1,13 @@
-const dnaData = {
-    adenineColour: "#007fff",
-    thymineColour: "#F7CC43",
-    guanineColour: "#00ff00",
-    cytosineColour: "#ff0040",
-    backboneColour: "#100AD0",
-    backBoneLineWidth: 2,
-    helixDistance: 0,
-    helixLength: 15,
-    basePairs: 2,
-    iterations: 1,
-    axiom: "A",
-    aRule: "TCA",
-    gRule: "ATG",
-    tRule: "CGA",
-    cRule: "AAC"
-}
-
-function drawDoubleHelix(dnaData) {
+function drawDoubleHelix() {
     const canvas = document.getElementById('lSystemDNACanvas');
     const context = canvas.getContext('2d');
     const rect = canvas.getBoundingClientRect();
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.save();
 
-    setInputValues(dnaData, canvas);
+    const dnaData = returnDNAData();
+    dnaData.helixLength = (canvas.width / 3) / dnaData.iterations;
+    dnaData.helixDistance = dnaData.helixLength / 2;
 
     const ogDNA = returnDNAOriginalChain(dnaData);
     const ogDNAArray = groupArrayInSetsOfN(dnaData.basePairs, Array.from(ogDNA));
@@ -64,8 +48,8 @@ function drawDNASection(context, dcp, dnaData, t, leftBases, rightBases) {
         leftBezierEnd = returnDNABezierPoint(end.x, end.y, end.degrees, 0, dnaData.helixDistance);
     }
 
-    drawGenericBezierCurve(context, dnaData.backboneColour, dnaData.backBoneLineWidth, dcp, end, rightBezierStart, rightBezierEnd);
-    drawGenericBezierCurve(context, dnaData.backboneColour, dnaData.backBoneLineWidth, dcp, end, leftBezierStart, leftBezierEnd);
+    drawGenericBezierCurve(context, dnaData.backBoneColour, dnaData.lineWidth, dcp, end, rightBezierStart, rightBezierEnd);
+    drawGenericBezierCurve(context, dnaData.backBoneColour, dnaData.lineWidth, dcp, end, leftBezierStart, leftBezierEnd);
 
     let tempT = t;
     for (let i = 0; i < dnaData.basePairs; i++) {
@@ -216,18 +200,20 @@ function returnDNABezierPoint(x, y, degrees, dir, helixDistance) {
     return getEndpoints(x, y, helixDistance * 2, theta)
 }
 
-function setInputValues(dnaData, canvas) {
-    dnaData.adenineColour = $('#lSystemDNAAdenine').val();
-    dnaData.thymineColour = $('#lSystemDNAThymine').val();
-    dnaData.guanineColour = $('#lSystemDNAGuanine').val();
-    dnaData.cytosineColour = $('#lSystemDNACytosine').val();
-    dnaData.iterations = parseInt($("#lSystemDNAIterations").val());
-    dnaData.helixLength = (canvas.width / 3) / dnaData.iterations;
-    dnaData.helixDistance = dnaData.helixLength / 2;
-    dnaData.basePairs = parseInt($("#lSystemDNABasePairs").val());
-    dnaData.axiom = $("#lSystemDNAAxiom").val();
-    dnaData.aRule = $("#lSystemDNAAdenineRec").val();
-    dnaData.gRule = $("#lSystemDNAGuanineRec").val();
-    dnaData.tRule = $("#lSystemDNAThymineRec").val();
-    dnaData.cRule = $("#lSystemDNACytosineRec").val();
+function returnDNAData() {
+    return {
+        adenineColour: $('#lSystemDNAAdenine').val(),
+        thymineColour: $('#lSystemDNAThymine').val(),
+        guanineColour: $('#lSystemDNAGuanine').val(),
+        cytosineColour: $('#lSystemDNACytosine').val(),
+        backBoneColour: $('#lSystemDNABackboneColour').val(),
+        iterations: parseInt($("#lSystemDNAIterations").val()),
+        basePairs: parseInt($("#lSystemDNABasePairs").val()),
+        lineWidth: parseInt($('#lSystemDNALineWidth').val()),
+        axiom: $("#lSystemDNAAxiom").val(),
+        aRule: $("#lSystemDNAAdenineRec").val(),
+        gRule: $("#lSystemDNAGuanineRec").val(),
+        tRule: $("#lSystemDNAThymineRec").val(),
+        cRule: $("#lSystemDNACytosineRec").val()
+    }
 }

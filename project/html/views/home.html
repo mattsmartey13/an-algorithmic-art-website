@@ -1,17 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-
-</head>
 <body>
-    <h1>An algorithmic art website using Vanilla JavaScript</h1>
-    <p>
+<h1 class="page-header">An algorithmic art website using Vanilla JavaScript</h1>
+<section class="page-content">
+    <p class="page-description">
         This is the final year project I have chosen for my BSc Computer Science Hons.
-        I have chosen this as I wanted a web development based project which was challenging while at the same time capturing artistically my interest in patterns and symbols.
+        I have chosen this as I wanted a web development based project which was challenging while at the same time
+        capturing artistically my interest in patterns and symbols.
+
+        For any artwork suggestions please <a href="mailto:matthew.victor.smart96@gmail.com">email me</a>.
     </p>
-    <ul class="footer-navigation">
-        <li class="navigation__link" onclick="router.loadRoute('about-me')">About me</li>
-        <li class="navigation__link" onclick="router.loadRoute('artwork-home')">My artwork</li>
-    </ul>
+    <div id="image-collection">
+        <div class="artwork-image">
+            <div class="gallery">
+                <img src="project/fractalbuilder.PNG" alt="Fractal builder" class="art-img"
+                     onclick="router.loadRoute('artwork-fractal-lsystem')">
+                <div class="gallery-description">Custom fractal builder - build your own algorithmic art!</div>
+            </div>
+        </div>
+
+
+        <div class="artwork-image">
+            <div class="gallery">
+                <img src="project/garden.png" alt="L-system garden" class="art-img"
+                     onclick="router.loadRoute('artwork-garden-lsystem')">
+                <div class="gallery-description">The L-system garden</div>
+            </div>
+        </div>
+
+        <div class="artwork-image">
+            <div class="gallery">
+                <img src="project/mandalalsystem.png" alt="L-system mandala" class="art-img"
+                     onclick="router.loadRoute('artwork-mandala-lsystem')">
+                <div class="gallery-description">The L-system mandala</div>
+            </div>
+        </div>
+
+        <div class="artwork-image">
+            <div class="gallery">
+                <img src="project/dna.png" alt="L-system DNA" class="art-img"
+                     onclick="router.loadRoute('artwork-dna-lsystem')">
+                <div class="gallery-description">The L-system DNA chain</div>
+            </div>
+        </div>
+    </div>
+</section>
 </body>
 </html>

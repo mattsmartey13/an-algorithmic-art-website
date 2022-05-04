@@ -1,36 +1,8 @@
-const mandalaData = {
-    'rotationAngle': 15,
-    'lineLength': 1,
-    'lineWidth': 1,
-    'circleRadius': 1,
-    'spawns': 1,
-    'mainStringLength': 1,
-    'branchNumber': 1,
-    'branchLength': 1,
-    'kinkStartIndex': 2,
-    'kinkEndIndex': 4,
-    'lineColor': "#000000",
-    'gradientColour1': "#801171",
-    'gradientColour2': "#f1ff36",
-}
-
-const mandalaCurrentPoint = {
-    'x': 0,
-    'y': 0,
-    'degrees': 0
-}
-
-const mandalaStashPoint = {
-    'x': 0,
-    'y': 0,
-    'degrees': 0
-}
-
-function validateMandalaIntInputs(md, mcp) {
-    parseInt(md.x);
-    parseInt(md.y);
-    parseInt(md.degrees);
-
+/**
+ * Ensure current point values are integers
+ * @param mcp
+ */
+function validateMandalaIntInputs(mcp) {
     parseInt(mcp.x);
     parseInt(mcp.y);
     parseInt(mcp.degrees);
@@ -38,30 +10,41 @@ function validateMandalaIntInputs(md, mcp) {
 
 /**
  * Main method to draw mandala, range will create a layering effect by increasing the line length by 1 for each iteration
- * @param mcp
- * @param msp
- * @param md
  */
-function drawLSystemMandala(mcp, msp, md) {
+function drawLSystemMandala() {
     const mandalaCanvas = document.getElementById('mandalaLSystemCanvas');
     const mandalaContext = mandalaCanvas.getContext("2d");
     const rect = mandalaCanvas.getBoundingClientRect();
-    const range = $('#lSystemMandalaRange').val();
 
-    resetLSystemCanvas(mandalaCanvas, mcp, msp);
-    mandalaOnInputs(md);
+    mandalaContext.clearRect(0, 0, mandalaCanvas.width, mandalaCanvas.height);
+    mandalaContext.save();
+
+    const mcp = {
+        'x': 0,
+        'y': 0,
+        'degrees': 0
+    }
+
+    const msp = {
+        'x': 0,
+        'y': 0,
+        'degrees': 0
+    }
+
+    const md = returnMandalaData();
+    md.kinkEndIndex = md.mainStringLength - md.kinkStartIndex;
     setMandalaCanvasColourGradient(md)
 
     mcp.x = rect.width / 2;
     mcp.y = rect.height / 2;
 
-    validateMandalaIntInputs(mcp, msp, md);
+    validateMandalaIntInputs(mcp);
 
     const circleCenter = drawCircleReturnCenter(mandalaContext, mcp, md);
     const angleGap = () => 360 / md.spawns;
     const endCoordinates = [];
 
-    for (let i = 0; i < range; i++) {
+    for (let i = 0; i < md.range; i++) {
         for (let j = 0; j < md.spawns; j++) {
             mcp.degrees = j * angleGap();
             mcp.x = setCircleXCoordinate(circleCenter.x, md.circleRadius, degreeToRadian(mcp.degrees))
@@ -82,7 +65,9 @@ function drawLSystemMandala(mcp, msp, md) {
 
 /**
  * Rules for each individual inside the Mandala L-system array
- * Notice [+] and [-]
+ * Notice [+] and [-] will create a branch at the rotated angle from the main string
+ * Push to an array the endpoint of the main string - these endpoints will be then connected
+ * to one another with lines to form a "mandala".
  * @param context
  * @param string
  * @param mcp
@@ -97,7 +82,7 @@ function processMandalaString(context, string, mcp, msp, md, endCoordinates) {
             case "F":
                 const theta = degreeToRadian(mcp.degrees)
                 const end = getEndpoints(mcp.x, mcp.y, md.lineLength, theta)
-                drawGenericLine(context, mcp.x, mcp.y, md.lineColor, md.lineWidth, end.x, end.y)
+                drawGenericLine(context, mcp.x, mcp.y, md.mandalaLineColor, md.lineWidth, end.x, end.y)
                 mcp.x = end.x;
                 mcp.y = end.y;
                 break;
@@ -122,7 +107,7 @@ function processMandalaString(context, string, mcp, msp, md, endCoordinates) {
         }
     }
 
-    if (string.includes("[+]") || string.includes("[-]") && endCoordinates !== undefined) {
+    if (endCoordinates !== undefined) {
         endCoordinates.push([mcp.x, mcp.y]);
     }
 }
@@ -177,7 +162,7 @@ function drawCircleReturnCenter(context, mcp, md) {
     context.beginPath();
     context.arc(circleCenter.x, circleCenter.y, md.circleRadius, 0, 2 * Math.PI, false);
     context.lineWidth = md.lineWidth
-    context.strokeStyle = md.lineColor;
+    context.strokeStyle = md.mandalaLineColor;
     context.stroke();
 
     return circleCenter;
@@ -192,9 +177,9 @@ function drawCircleReturnCenter(context, mcp, md) {
 function drawLayerEdges(context, md, endPoints) {
     for (let i = 0; i < endPoints.length; i++) {
         if (i !== endPoints.length - 1) {
-            drawGenericLine(context, endPoints[i][0], endPoints[i][1], md.lineColor, md.lineWidth, endPoints[i + 1][0], endPoints[i + 1][1]);
+            drawGenericLine(context, endPoints[i][0], endPoints[i][1], md.mandalaLineColor, md.lineWidth, endPoints[i + 1][0], endPoints[i + 1][1]);
         } else {
-            drawGenericLine(context, endPoints[i][0], endPoints[i][1], md.lineColor, md.lineWidth, endPoints[0][0], endPoints[0][1]);
+            drawGenericLine(context, endPoints[i][0], endPoints[i][1], md.mandalaLineColor, md.lineWidth, endPoints[0][0], endPoints[0][1]);
         }
     }
 }
@@ -223,7 +208,6 @@ function setCircleYCoordinate(yValue, radius, radians) {
 
 /**
  * Random mechanism to set the index of where branching occurs on the mandala main strings
- *
  * @param startIndex
  * @param endIndex
  * @param numberBranches
@@ -253,102 +237,29 @@ function setMandalaCanvasColourGradient(md) {
 }
 
 /**
- * All inputs as one function
- * @param md
+ * Mandala data in one function
  */
-function mandalaOnInputs(md) {
-    changeColourGradient1(md);
-    changeColourGradient2(md);
-    changeCircleRadius(md);
-    changeLineColor(md);
-    changeLineLength(md);
-    changeLineWidth(md);
-    changeNumberSpawns(md);
-    changeNumberSideBranches(md);
-    changeSideBranchLength(md);
-    changeMainBranchLength(md);
+function returnMandalaData() {
+    return {
+        'lineLength': parseInt($("#lSystemMandalaLineLength").val()),
+        'lineWidth': parseInt($("#lSystemMandalaLineWidth").val()),
+        'circleRadius': parseInt($("#lSystemMandalaCircleRadius").val()),
+        'spawns': parseInt($("#lSystemMandalaSpawns").val()),
+        'mainStringLength': parseInt($("#lSystemMandalaMainStringLength").val()),
+        'branchNumber': parseInt($("#lSystemMandalaBranchNumber").val()),
+        'branchLength': parseInt($("#lSystemMandalaBranchLength").val()),
+        'range': parseInt($("#lSystemMandalaRange").val()),
+        'mandalaLineColor': $("#lSystemMandalaLineColour").val(),
+        'gradientColour1': $("#lSystemMandalaColour1").val(),
+        'gradientColour2': $("#lSystemMandalaColour2").val(),
+        'kinkStartIndex': 2,
+        'rotationAngle': 15,
+    }
 }
 
-/**
- * Setter for gradient colour 1
- */
-function changeColourGradient1(md) {
-    md.gradientColour1 = $("#lSystemMandalaColour1").val();
-}
 
-/**
- * Setter for lineColor
- * @param md
- */
-function changeLineColor(md) {
-    md.lineColor = $('#lSystemMandalaLineColour').val();
-}
 
-/**
- * Setter for gradient colour 2
- * @param md
- */
-function changeColourGradient2(md) {
-    md.gradientColour2 = $("#lSystemMandalaColour2").val();
-}
 
-/**
- * Setter for lineLength
- * @param md
- */
-function changeLineLength(md) {
-    md.lineLength = $("#lSystemMandalaLineLength").val();
-}
-
-/**
- * Setter for lineWidth
- * @param md
- */
-function changeLineWidth(md) {
-    md.lineWidth = $("#lSystemMandalaLineWidth").val();
-}
-
-/**
- * Setter for circle radius
- * @param md
- */
-function changeCircleRadius(md) {
-    md.circleRadius = $("#lSystemMandalaCircleRadius").val();
-}
-
-/**
- * Setter for number of branches stemming from circle
- * @param md
- */
-function changeNumberSpawns(md) {
-    md.spawns = $("#lSystemMandalaSpawns").val();
-}
-
-/**
- * Setter for main branch length and where sides can grow
- * @param md
- */
-function changeMainBranchLength(md) {
-    md.mainStringLength = $("#lSystemMandalaMainStringLength").val();
-    md.kinkStartIndex = 2;
-    md.kinkEndIndex = md.mainStringLength - md.branchLength;
-}
-
-/**
- * Setter for side branch length
- * @param md
- */
-function changeSideBranchLength(md) {
-    md.branchLength = $("#lSystemMandalaBranchLength").val();
-}
-
-/**
- * Setter for number of side branches off a main branch
- * @param md
- */
-function changeNumberSideBranches(md) {
-    md.branchNumber = $("#lSystemMandalaBranchNumber").val();
-}
 
 
 
