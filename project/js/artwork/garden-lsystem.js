@@ -148,34 +148,39 @@ function setPlantProperties(typeName) {
     const gardenContext = gardenCanvas.getContext('2d');
     const gcp = gardenCurrentPoint, ct = currentType;
 
+    $('.gardenTypeButton').attr('disabled', false);
     switch (typeName) {
-        case "Flower":
-            gardenContext.strokeStyle = "#446327";
-            setBaseFlowerSettings(gcp, ct);
-            break;
         case "Tree":
             gardenContext.strokeStyle = "#6e4300";
             gardenContext.fillStyle = "#087000";
             setBaseTreeSettings(gcp, ct);
+            $('#typeTree').attr('disabled', true);
+            break;
+        case "Flower":
+            gardenContext.strokeStyle = "#446327";
+            setBaseFlowerSettings(gcp, ct);
+            $('#typeFlower').attr('disabled', true);
             break;
         case "Shoot":
             gardenContext.strokeStyle = "#25523b";
             gardenContext.fillStyle = "#5aab61";
             setBaseShootSettings(gcp, ct);
+            $('#typeShoot').attr('disabled', true);
             break;
         case "Cloud":
             gardenContext.strokeStyle = "#A9B7B4";
             gardenContext.fillStyle = "#A9B7B4";
             setBaseCloudSettings(gcp, ct);
+            $('#typeCloud').attr('disabled', true);
             break;
         case "Grass":
             gardenContext.strokeStyle = "#348C31";
             gardenContext.fillStyle = "#348C31";
             setBaseGrassSettings(gcp, ct);
+            $('#typeGrass').attr('disabled', true);
             break;
     }
     gardenContext.save();
-    document.getElementById('gardenTypeOutput').innerHTML = typeName;
 }
 
 /**

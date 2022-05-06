@@ -50,7 +50,7 @@ class Router {
 
             /**
              * If the URL segment matches the corresponding route segment,
-             * or the route segment contains a colon (individual artwork posts), the route is matched
+             * or the route segment contains a colon, the route is matched
              */
             const match = routePathSegments.every((routePathSegment, i) => {
                 return routePathSegment === urlSegments[i] || routePathSegment[0] === ':';

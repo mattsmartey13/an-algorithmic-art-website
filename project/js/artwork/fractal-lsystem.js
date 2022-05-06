@@ -42,15 +42,14 @@ function drawFractalLine(cp, fractalProperties) {
 }
 
 /**
- * This interprets the F+-[] based rule that is defined as A or B by the user.
- * This contains the instructions to draw a line, rotate the point, save the point or go back to the saved point on the canvas.
+ * This interprets the F+- based rule that is generated as part of lSystemGenerate, based on the user's inputs.
+ * This contains the instructions to draw a line and rotate the point on the canvas.
  * @param canvas
  * @param currentPoint
- * @param stashPoint
  * @param rule
  * @param fractalProperties
  */
-function processFractalRule(canvas, currentPoint, stashPoint, rule, fractalProperties) {
+function processFractalRule(canvas, currentPoint, rule, fractalProperties) {
     for (let character of rule) {
         switch (character) {
             case 'F':
@@ -83,14 +82,13 @@ function drawCustomFractal() {
     }
 
     const currentPoint = fractalCurrentPoint;
-    const stashPoint = currentPoint;
 
     for (let i = 0; i < fractalProperties.iterations; i++) {
         string = generateLSystem(string, alphabet);
         fractalProperties.lineLength *= 0.5;
     }
 
-    processFractalRule(canvas, currentPoint, stashPoint, string, fractalProperties)
+    processFractalRule(canvas, currentPoint, string, fractalProperties)
 }
 
 /**
@@ -111,6 +109,28 @@ function resetFractalCanvas() {
     const canvas = document.getElementById('fractalLSystemCanvas');
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+/**
+ * Generic L-system builder from an axiom and a set of rules
+ * Requires an axiom string, built from F, +  and -
+ * Requires a rules object to substitute F into a production rule, along with + and -
+ * @param start
+ * @param rules
+ * @returns {string}
+ */
+function generateLSystem(start, rules) {
+    let lSystem = "";
+    for (let c in start) {
+        if (start[c] === rules.axi) {
+            lSystem += $("#production").val();
+        } else if (start[c] === rules.plus) {
+            lSystem += rules.plus;
+        } else if (start[c] === rules.minus) {
+            lSystem += rules.minus;
+        }
+    }
+    return lSystem;
 }
 
 
