@@ -23,6 +23,7 @@ p, li, dd, dt, label, td {
 
 .page-description {
     line-height: 1.5rem;
+    padding: 1rem;
 }
 
 ul {
@@ -69,6 +70,12 @@ dd {
 #gardenCanvas, #fractalLSystemCanvas {
     width: 100%;
     max-height: 1200px;
+}
+
+.artwork-text {
+    display: flex;
+    justify-content: space-evenly;
+    position: relative;
 }
 
 .artwork-inputs {
@@ -201,17 +208,25 @@ table, th, td, #gardenCanvas, #fractalLSystemCanvas, #mandalaLSystemCanvas, #lSy
 }
 
 .gallery-description {
-    padding: 15px;
+    padding: 1rem;
     text-align: center;
+    height: auto;
 }
 
-* {
-    box-sizing: border-box;
+#image-collection {
+    display: flex;
+    overflow: hidden;
+    height: min-content;
 }
 
 .artwork-image {
-    padding: 0 6px;
+    display: grid;
+    padding: 1rem;
     float: left;
     width: 24.99999%;
+    position: relative;
+    justify-content: flex-end;
 }
+
+
 

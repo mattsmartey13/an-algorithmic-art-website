@@ -45,7 +45,7 @@ const routes = [
 /**
  * Helper method to load HTML file into the div "content" element (view)
  * GET request to fetch html file
- * Throw error if file not found
+ * Do nothing if file not found
  *
  * @param pathToHTML
  */

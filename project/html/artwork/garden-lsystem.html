@@ -21,7 +21,7 @@
         Note that after resetting the canvas, you do not need to reestablish the soil layer again.
     </p>
 </section>
-<div id="artwork-text">
+<div class="artwork-text">
     <p>
         Mouse position
         <label id="gardenMouseX"></label>
@@ -32,12 +32,10 @@
         <label id="gardenMouseFloatX"></label>
         <label id="gardenMouseFloatY"></label>
     </p>
-    <h4>Current type is:</h4>
-    <p id="gardenTypeOutput"></p>
 </div>
 <div id="artwork-garden">
     <div class="artwork-inputs" id="artwork-inputs-garden">
-        <button id="gardenSetupButton" class="gardenTypeButton" onmousedown="gardenSetup()">Setup soil and grass layers
+        <button id="gardenSetupButton" onmousedown="gardenSetup()">Setup soil and grass layers
         </button>
         <button id="typeTree" class="gardenTypeButton" onclick="setPlantProperties(names.tree)">Set type to tree</button>
         <button id="typeShoot" class="gardenTypeButton" onclick="setPlantProperties(names.shoot)">Set type to shoot
